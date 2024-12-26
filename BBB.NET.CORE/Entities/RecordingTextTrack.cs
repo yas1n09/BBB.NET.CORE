@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BBB.NET.CORE.Entities
 {
-    public class RecordingTrack
+    public class RecordingTextTrack
     {
         public string href { get; set; }
         // Bu metin izleme dosyasını indirmek için bir bağlantıdır. Format her zaman WebVTT (text/vtt mime tipi) olacaktır, bu da SRT formatına benzer.

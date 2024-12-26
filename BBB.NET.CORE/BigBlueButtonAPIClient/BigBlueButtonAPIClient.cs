@@ -58,6 +58,7 @@ namespace BBB.NET.CORE.BigBlueButtonAPIClient
             }
         }
 
+
         private async Task<T> HttpPostAsync<T>(string method, BaseRequest request)
         {
             var formData = urlBuilder.Build(method, request, true);
@@ -86,6 +87,8 @@ namespace BBB.NET.CORE.BigBlueButtonAPIClient
             }
 
         }
+
+
         private async Task<T> HttpPostFileAsync<T>(string method, BasePostFileRequest request)
         {
             var url = urlBuilder.Build(method, request);
@@ -114,5 +117,50 @@ namespace BBB.NET.CORE.BigBlueButtonAPIClient
 
         }
         #endregion
+
+
+
+
+
+
+
+        #region Meeting Management
+        public async Task<string> CreateMeetingAsync(CreateMeetingRequest request)
+        {
+            return await HttpGetAsync<string>("create", request);
+        }
+
+        public async Task<string> EndMeetingAsync(EndMeetingRequest request)
+        {
+            return await HttpGetAsync<string>("end", request);
+        }
+
+        public async Task<GetMeetingInfoResponse> GetMeetingInfoAsync(GetMeetingInfoRequest request)
+        {
+            return await HttpGetAsync<GetMeetingInfoResponse>("getMeetingInfo", request);
+        }
+
+        public async Task<IsMeetingRunningResponse> IsMeetingRunningAsync(IsMeetingRunningRequest request)
+        {
+            return await HttpGetAsync<IsMeetingRunningResponse>("isMeetingRunning", request);
+        }
+
+        public async Task<string> JoinMeetingAsync(JoinMeetingRequest request)
+        {
+            return await HttpGetAsync<string>("join", request);
+        }
+
+        public async Task<GetMeetingsResponse> GetMeetingsAsync()
+        {
+            return await HttpGetAsync<GetMeetingsResponse>("getMeetings");
+        }
+        #endregion
+
+
+
+
+
+
+
     }
 }
