@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35527.113 d17.12
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BBB.NET.CORE", "BBB.NET.CORE\BBB.NET.CORE.csproj", "{2B99DB0F-EDBA-4710-BFB2-C89E17621DC2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BBB.NET.CORE.API", "BBB.NET.CORE.API\BBB.NET.CORE.API.csproj", "{EBF85F60-D035-47B2-96C2-D54FDC8F53B2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2B99DB0F-EDBA-4710-BFB2-C89E17621DC2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B99DB0F-EDBA-4710-BFB2-C89E17621DC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B99DB0F-EDBA-4710-BFB2-C89E17621DC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B99DB0F-EDBA-4710-BFB2-C89E17621DC2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EBF85F60-D035-47B2-96C2-D54FDC8F53B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EBF85F60-D035-47B2-96C2-D54FDC8F53B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EBF85F60-D035-47B2-96C2-D54FDC8F53B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EBF85F60-D035-47B2-96C2-D54FDC8F53B2}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
