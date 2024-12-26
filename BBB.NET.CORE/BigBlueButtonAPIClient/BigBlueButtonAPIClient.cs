@@ -1,5 +1,15 @@
 ﻿using BBB.NET.CORE.BaseClasses;
 using BBB.NET.CORE.Helpers;
+using BBB.NET.CORE.Requests.BreakoutRoom;
+using BBB.NET.CORE.Requests.Meeting;
+using BBB.NET.CORE.Requests.Recording;
+using BBB.NET.CORE.Requests.Slides;
+using BBB.NET.CORE.Requests.User;
+using BBB.NET.CORE.Responses.BreakoutRoom;
+using BBB.NET.CORE.Responses.Meeting;
+using BBB.NET.CORE.Responses.Recording;
+using BBB.NET.CORE.Responses.Slides;
+using BBB.NET.CORE.Responses.User;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -12,7 +22,7 @@ namespace BBB.NET.CORE.BigBlueButtonAPIClient
 {
     public class BigBlueButtonAPIClient
     {
-        #region Common
+        
         private readonly HttpClient httpClient;
         private readonly UrlBuilder urlBuilder;
 
@@ -23,116 +33,16 @@ namespace BBB.NET.CORE.BigBlueButtonAPIClient
             this.httpClient = httpClient;
         }
 
-        private async Task<T> HttpGetAsync<T>(string method, BaseRequest request)
-        {
-            var url = urlBuilder.Build(method, request);
-            var result = await HttpGetAsync<T>(url);
-            return result;
-        }
-
-
-        private async Task<T> HttpGetAsync<T>(string url)
-        {
-            // HTTP isteği gönder
-            var response = await httpClient.GetAsync(url);
-
-            // Yanıtı metin olarak oku
-            var xmlOrJson = await response.Content.ReadAsStringAsync();
-
-            // Yanıtı logla
-            Console.WriteLine("Response XML/JSON: " + xmlOrJson);
-
-            // Eğer tip string ise yanıtı direkt döndür
-            if (typeof(T) == typeof(string)) return (T)(object)xmlOrJson;
-
-            // Eğer XML ise deserialize et
-            if (xmlOrJson.StartsWith("<"))
-            {
-                return XmlHelper.FromXml<T>(xmlOrJson);
-            }
-            else
-            {
-                // JSON formatı varsa işle
-                var wrapper = JsonConvert.DeserializeObject<ResponseJsonWrapper<T>>(xmlOrJson);
-                return wrapper.response;
-            }
-        }
-
-
-        private async Task<T> HttpPostAsync<T>(string method, BaseRequest request)
-        {
-            var formData = urlBuilder.Build(method, request, true);
-            var formDataBytes = System.Text.Encoding.UTF8.GetBytes(formData);
-
-            var cts = new CancellationTokenSource();
-            using (var content = new ByteArrayContent(formDataBytes))
-            {
-                content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");
-                var response = await httpClient.PostAsync(urlBuilder.BuildMethodUrl(method), content, cts.Token);
-                var xmlOrJson = await response.Content.ReadAsStringAsync();
-                if (typeof(T) == typeof(string)) return (T)(object)xmlOrJson;
-
-                // Most APIs return XML string.
-                // The getRecordingTextTracks API may return JSON string.
-                if (xmlOrJson.StartsWith("<"))
-                {
-                    return XmlHelper.FromXml<T>(xmlOrJson);
-                }
-                else
-                {
-                    var wrapper = JsonConvert.DeserializeObject<ResponseJsonWrapper<T>>(xmlOrJson);
-                    return wrapper.response;
-                }
-
-            }
-
-        }
-
-
-        private async Task<T> HttpPostFileAsync<T>(string method, BasePostFileRequest request)
-        {
-            var url = urlBuilder.Build(method, request);
-            var cts = new CancellationTokenSource();
-            using (var content = new MultipartFormDataContent())
-            {
-                content.Add(new ByteArrayContent(request.file.FileData), request.file.Name, request.file.FileName);
-
-                var response = await httpClient.PostAsync(url, content, cts.Token);
-                var xmlOrJson = await response.Content.ReadAsStringAsync();
-                if (typeof(T) == typeof(string)) return (T)(object)xmlOrJson;
-
-                // Most APIs return XML string.
-                // The getRecordingTextTracks API may return JSON string.
-                if (xmlOrJson.StartsWith("<"))
-                {
-                    return XmlHelper.FromXml<T>(xmlOrJson);
-                }
-                else
-                {
-                    var wrapper = JsonConvert.DeserializeObject<ResponseJsonWrapper<T>>(xmlOrJson);
-                    return wrapper.response;
-                }
-
-            }
-
-        }
-        #endregion
-
-
-
-
-
-
 
         #region Meeting Management
-        public async Task<string> CreateMeetingAsync(CreateMeetingRequest request)
+        public async Task<CreateMeetingResponse> CreateMeetingAsync(CreateMeetingRequest request)
         {
-            return await HttpGetAsync<string>("create", request);
+            return await HttpGetAsync<CreateMeetingResponse>("create", request);
         }
 
-        public async Task<string> EndMeetingAsync(EndMeetingRequest request)
+        public async Task<EndMeetingResponse> EndMeetingAsync(EndMeetingRequest request)
         {
-            return await HttpGetAsync<string>("end", request);
+            return await HttpGetAsync<EndMeetingResponse>("end", request);
         }
 
         public async Task<GetMeetingInfoResponse> GetMeetingInfoAsync(GetMeetingInfoRequest request)
@@ -145,16 +55,248 @@ namespace BBB.NET.CORE.BigBlueButtonAPIClient
             return await HttpGetAsync<IsMeetingRunningResponse>("isMeetingRunning", request);
         }
 
-        public async Task<string> JoinMeetingAsync(JoinMeetingRequest request)
-        {
-            return await HttpGetAsync<string>("join", request);
-        }
-
         public async Task<GetMeetingsResponse> GetMeetingsAsync()
         {
             return await HttpGetAsync<GetMeetingsResponse>("getMeetings");
         }
+
+        public async Task<string> JoinMeetingAsync(JoinMeetingRequest request)
+        {
+            var url = urlBuilder.Build("join", request);
+            return url;
+        }
         #endregion
+
+
+        #region Recording Management
+        public async Task<GetRecordingsResponse> GetRecordingsAsync(GetRecordingsRequest request)
+        {
+            return await HttpGetAsync<GetRecordingsResponse>("getRecordings", request);
+        }
+
+        public async Task<PublishRecordingsResponse> PublishRecordingsAsync(PublishRecordingsRequest request)
+        {
+            return await HttpGetAsync<PublishRecordingsResponse>("publishRecordings", request);
+        }
+
+        public async Task<DeleteRecordingsResponse> DeleteRecordingsAsync(DeleteRecordingsRequest request)
+        {
+            return await HttpGetAsync<DeleteRecordingsResponse>("deleteRecordings", request);
+        }
+
+        public async Task<UpdateRecordingsResponse> UpdateRecordingsAsync(UpdateRecordingsRequest request)
+        {
+            return await HttpGetAsync<UpdateRecordingsResponse>("updateRecordings", request);
+        }
+
+        public async Task<PauseRecordingResponse> PauseRecordingAsync(PauseRecordingRequest request)
+        {
+            return await HttpGetAsync<PauseRecordingResponse>("pauseRecording", request);
+        }
+
+        public async Task<ResumeRecordingResponse> ResumeRecordingAsync(ResumeRecordingRequest request)
+        {
+            return await HttpGetAsync<ResumeRecordingResponse>("resumeRecording", request);
+        }
+
+        public async Task<AddRecordingMetadataResponse> AddRecordingMetadataAsync(AddRecordingMetadataRequest request)
+        {
+            return await HttpGetAsync<AddRecordingMetadataResponse>("addRecordingMetadata", request);
+        }
+
+        public async Task<ExtendRecordingDurationResponse> ExtendRecordingDurationAsync(ExtendRecordingDurationRequest request)
+        {
+            return await HttpGetAsync<ExtendRecordingDurationResponse>("extendRecordingDuration", request);
+        }
+
+        public async Task<GetRecordingFormatsResponse> GetRecordingFormatsAsync(GetRecordingFormatsRequest request)
+        {
+            return await HttpGetAsync<GetRecordingFormatsResponse>("getRecordingFormats", request);
+        }
+        #endregion
+
+
+        #region User Management
+        public async Task<MuteUserResponse> MuteUserAsync(MuteUserRequest request)
+        {
+            return await HttpGetAsync<MuteUserResponse>("muteUser", request);
+        }
+
+        public async Task<KickUserResponse> KickUserAsync(KickUserRequest request)
+        {
+            return await HttpGetAsync<KickUserResponse>("kickUser", request);
+        }
+
+        public async Task<MuteAllUsersResponse> MuteAllUsersAsync(MuteAllUsersRequest request)
+        {
+            return await HttpGetAsync<MuteAllUsersResponse>("muteAllUsers", request);
+        }
+
+        public async Task<LockUserResponse> LockUserAsync(LockUserRequest request)
+        {
+            return await HttpGetAsync<LockUserResponse>("lockUser", request);
+        }
+
+        public async Task<LockSettingsResponse> LockSettingsAsync(LockSettingsRequest request)
+        {
+            return await HttpGetAsync<LockSettingsResponse>("lockSettings", request);
+        }
+
+        public async Task<RemoveUserResponse> RemoveUserAsync(RemoveUserRequest request)
+        {
+            return await HttpGetAsync<RemoveUserResponse>("removeUser", request);
+        }
+        #endregion
+
+
+        #region Breakout Room Management
+        public async Task<CreateBreakoutRoomsResponse> CreateBreakoutRoomsAsync(CreateBreakoutRoomsRequest request)
+        {
+            return await HttpGetAsync<CreateBreakoutRoomsResponse>("createBreakoutRooms", request);
+        }
+
+        public async Task<GetBreakoutRoomsResponse> GetBreakoutRoomsAsync(GetBreakoutRoomsRequest request)
+        {
+            return await HttpGetAsync<GetBreakoutRoomsResponse>("getBreakoutRooms", request);
+        }
+
+        public async Task<EndBreakoutRoomsResponse> EndBreakoutRoomsAsync(EndBreakoutRoomsRequest request)
+        {
+            return await HttpGetAsync<EndBreakoutRoomsResponse>("endBreakoutRooms", request);
+        }
+
+        public async Task<JoinBreakoutRoomResponse> JoinBreakoutRoomAsync(JoinBreakoutRoomRequest request)
+        {
+            return await HttpGetAsync<JoinBreakoutRoomResponse>("joinBreakoutRoom", request);
+        }
+
+        public async Task<AssignUserToBreakoutRoomResponse> AssignUserToBreakoutRoomAsync(AssignUserToBreakoutRoomRequest request)
+        {
+            return await HttpGetAsync<AssignUserToBreakoutRoomResponse>("assignUserToBreakoutRoom", request);
+        }
+
+        public async Task<BreakoutRoomInfoResponse> BreakoutRoomInfoAsync(BreakoutRoomInfoRequest request)
+        {
+            return await HttpGetAsync<BreakoutRoomInfoResponse>("getBreakoutRoomInfo", request);
+        }
+
+        public async Task<BreakoutRoomParticipantsResponse> BreakoutRoomParticipantsAsync(BreakoutRoomParticipantsRequest request)
+        {
+            return await HttpGetAsync<BreakoutRoomParticipantsResponse>("getBreakoutRoomParticipants", request);
+        }
+
+        public async Task<CloseBreakoutRoomResponse> CloseBreakoutRoomAsync(CloseBreakoutRoomRequest request)
+        {
+            return await HttpGetAsync<CloseBreakoutRoomResponse>("closeBreakoutRoom", request);
+        }
+
+        public async Task<ExtendBreakoutRoomResponse> ExtendBreakoutRoomAsync(ExtendBreakoutRoomRequest request)
+        {
+            return await HttpGetAsync<ExtendBreakoutRoomResponse>("extendBreakoutRoom", request);
+        }
+        #endregion
+
+
+        #region Slides Management
+        public async Task<InsertSlideResponse> InsertSlideAsync(InsertSlideRequest request)
+        {
+            return await HttpPostFileAsync<InsertSlideResponse>("insertDocument", request);
+        }
+
+        public async Task<RemoveSlideResponse> RemoveSlideAsync(RemoveSlideRequest request)
+        {
+            return await HttpGetAsync<RemoveSlideResponse>("removeDocument", request);
+        }
+
+        public async Task<GetSlidesResponse> GetSlidesAsync(GetSlidesRequest request)
+        {
+            return await HttpGetAsync<GetSlidesResponse>("getSlides", request);
+        }
+
+        public async Task<SetSlideAsCurrentResponse> SetSlideAsCurrentAsync(SetSlideAsCurrentRequest request)
+        {
+            return await HttpGetAsync<SetSlideAsCurrentResponse>("setSlideAsCurrent", request);
+        }
+
+        public async Task<ReorderSlidesResponse> ReorderSlidesAsync(ReorderSlidesRequest request)
+        {
+            return await HttpGetAsync<ReorderSlidesResponse>("reorderSlides", request);
+        }
+
+        public async Task<ClearAllSlidesResponse> ClearAllSlidesAsync(ClearAllSlidesRequest request)
+        {
+            return await HttpGetAsync<ClearAllSlidesResponse>("clearAllSlides", request);
+        }
+        #endregion
+
+
+        #region HTTP Methods
+        private async Task<T> HttpGetAsync<T>(string method, BaseRequest request)
+        {
+            var url = urlBuilder.Build(method, request);
+            var result = await HttpGetAsync<T>(url);
+            return result;
+        }
+
+        private async Task<T> HttpGetAsync<T>(string url)
+        {
+            var response = await httpClient.GetAsync(url);
+            var xmlOrJson = await response.Content.ReadAsStringAsync();
+
+            Console.WriteLine("Response XML/JSON: " + xmlOrJson);
+
+            if (typeof(T) == typeof(string)) return (T)(object)xmlOrJson;
+
+            if (xmlOrJson.StartsWith("<"))
+            {
+                return XmlHelper.FromXml<T>(xmlOrJson);
+            }
+            else
+            {
+                var wrapper = JsonConvert.DeserializeObject<ResponseJsonWrapper<T>>(xmlOrJson);
+                return wrapper.response;
+            }
+        }
+
+
+
+        private async Task<T> HttpPostFileAsync<T>(string method, BasePostFileRequest request)
+        {
+            var url = urlBuilder.Build(method, request);
+            using var content = new MultipartFormDataContent
+    {
+        { new ByteArrayContent(request.file.FileData), "file", request.file.FileName }
+    };
+            var response = await httpClient.PostAsync(url, content);
+            var xmlOrJson = await response.Content.ReadAsStringAsync();
+
+            if (typeof(T) == typeof(string)) return (T)(object)xmlOrJson;
+
+            if (xmlOrJson.StartsWith("<"))
+            {
+                return XmlHelper.FromXml<T>(xmlOrJson);
+            }
+            else
+            {
+                var wrapper = JsonConvert.DeserializeObject<ResponseJsonWrapper<T>>(xmlOrJson);
+                return wrapper.response;
+            }
+        }
+
+        #endregion
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
