@@ -1,4 +1,5 @@
 ﻿using BBB.NET.CORE.BaseClasses;
+using BBB.NET.CORE.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
