@@ -1,15 +1,23 @@
 ﻿using BBB.NET.CORE.BaseClasses;
 using BBB.NET.CORE.Helpers;
 using BBB.NET.CORE.Requests.BreakoutRoom;
+using BBB.NET.CORE.Requests.Chat;
 using BBB.NET.CORE.Requests.Meeting;
+using BBB.NET.CORE.Requests.Notification;
 using BBB.NET.CORE.Requests.Recording;
 using BBB.NET.CORE.Requests.Slides;
+using BBB.NET.CORE.Requests.Translation;
 using BBB.NET.CORE.Requests.User;
+using BBB.NET.CORE.Requests.Webhook;
 using BBB.NET.CORE.Responses.BreakoutRoom;
+using BBB.NET.CORE.Responses.Chat;
 using BBB.NET.CORE.Responses.Meeting;
+using BBB.NET.CORE.Responses.Notification;
 using BBB.NET.CORE.Responses.Recording;
 using BBB.NET.CORE.Responses.Slides;
+using BBB.NET.CORE.Responses.Translation;
 using BBB.NET.CORE.Responses.User;
+using BBB.NET.CORE.Responses.Webhook;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -230,6 +238,94 @@ namespace BBB.NET.CORE.BigBlueButtonAPIClient
         #endregion
 
 
+        #region Chat Management
+        public async Task<SendChatMessageResponse> SendChatMessageAsync(SendChatMessageRequest request)
+        {
+            return await HttpGetAsync<SendChatMessageResponse>("sendChatMessage", request);
+        }
+
+        public async Task<GetChatMessagesResponse> GetChatMessagesAsync(GetChatMessagesRequest request)
+        {
+            return await HttpGetAsync<GetChatMessagesResponse>("getChatMessages", request);
+        }
+
+        public async Task<ClearChatMessagesResponse> ClearChatMessagesAsync(ClearChatMessagesRequest request)
+        {
+            return await HttpGetAsync<ClearChatMessagesResponse>("clearChatMessages", request);
+        }
+        #endregion
+
+
+        #region Webhook Management
+        public async Task<CreateWebhookResponse> CreateWebhookAsync(CreateWebhookRequest request)
+        {
+            return await HttpGetAsync<CreateWebhookResponse>("createWebhook", request);
+        }
+
+        public async Task<DeleteWebhookResponse> DeleteWebhookAsync(DeleteWebhookRequest request)
+        {
+            return await HttpGetAsync<DeleteWebhookResponse>("deleteWebhook", request);
+        }
+
+        public async Task<ListWebhooksResponse> ListWebhooksAsync(ListWebhooksRequest request)
+        {
+            return await HttpGetAsync<ListWebhooksResponse>("listWebhooks", request);
+        }
+
+        public async Task<PauseWebhookResponse> PauseWebhookAsync(PauseWebhookRequest request)
+        {
+            return await HttpGetAsync<PauseWebhookResponse>("pauseWebhook", request);
+        }
+
+        public async Task<ResumeWebhookResponse> ResumeWebhookAsync(ResumeWebhookRequest request)
+        {
+            return await HttpGetAsync<ResumeWebhookResponse>("resumeWebhook", request);
+        }
+
+        public async Task<UpdateWebhookResponse> UpdateWebhookAsync(UpdateWebhookRequest request)
+        {
+            return await HttpGetAsync<UpdateWebhookResponse>("updateWebhook", request);
+        }
+        #endregion
+
+
+        #region Notification Management
+        public async Task<SendNotificationResponse> SendNotificationAsync(SendNotificationRequest request)
+        {
+            return await HttpGetAsync<SendNotificationResponse>("sendNotification", request);
+        }
+
+        public async Task<GetNotificationStatusResponse> GetNotificationStatusAsync(GetNotificationStatusRequest request)
+        {
+            return await HttpGetAsync<GetNotificationStatusResponse>("getNotificationStatus", request);
+        }
+        #endregion
+
+
+        #region Translation Management
+        public async Task<AddTranslationResponse> AddTranslationAsync(AddTranslationRequest request)
+        {
+            return await HttpGetAsync<AddTranslationResponse>("addTranslation", request);
+        }
+
+        public async Task<RemoveTranslationResponse> RemoveTranslationAsync(RemoveTranslationRequest request)
+        {
+            return await HttpGetAsync<RemoveTranslationResponse>("removeTranslation", request);
+        }
+        #endregion
+
+
+
+
+
+
+
+
+
+
+
+
+
         #region HTTP Methods
         private async Task<T> HttpGetAsync<T>(string method, BaseRequest request)
         {
@@ -284,25 +380,6 @@ namespace BBB.NET.CORE.BigBlueButtonAPIClient
         }
 
         #endregion
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     }
 }
