@@ -1,23 +1,39 @@
 ﻿using BBB.NET.CORE.BaseClasses;
 using BBB.NET.CORE.Helpers;
+using BBB.NET.CORE.Requests.AuditLogs;
 using BBB.NET.CORE.Requests.BreakoutRoom;
 using BBB.NET.CORE.Requests.Chat;
+using BBB.NET.CORE.Requests.Health;
 using BBB.NET.CORE.Requests.Meeting;
+using BBB.NET.CORE.Requests.Modules;
 using BBB.NET.CORE.Requests.Notification;
+using BBB.NET.CORE.Requests.Polling;
 using BBB.NET.CORE.Requests.Recording;
+using BBB.NET.CORE.Requests.RecordingTextTracks;
+using BBB.NET.CORE.Requests.Reporting;
 using BBB.NET.CORE.Requests.Slides;
 using BBB.NET.CORE.Requests.Translation;
 using BBB.NET.CORE.Requests.User;
+using BBB.NET.CORE.Requests.VirtualBackground;
 using BBB.NET.CORE.Requests.Webhook;
+using BBB.NET.CORE.Requests.WhiteBoard;
+using BBB.NET.CORE.Responses.AuditLogs;
 using BBB.NET.CORE.Responses.BreakoutRoom;
 using BBB.NET.CORE.Responses.Chat;
+using BBB.NET.CORE.Responses.Health;
 using BBB.NET.CORE.Responses.Meeting;
+using BBB.NET.CORE.Responses.Modules;
 using BBB.NET.CORE.Responses.Notification;
+using BBB.NET.CORE.Responses.Polling;
 using BBB.NET.CORE.Responses.Recording;
+using BBB.NET.CORE.Responses.RecordingTextTracks;
+using BBB.NET.CORE.Responses.Reporting;
 using BBB.NET.CORE.Responses.Slides;
 using BBB.NET.CORE.Responses.Translation;
 using BBB.NET.CORE.Responses.User;
+using BBB.NET.CORE.Responses.VirtualBackground;
 using BBB.NET.CORE.Responses.Webhook;
+using BBB.NET.CORE.Responses.WhiteBoard;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -26,7 +42,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BBB.NET.CORE.BigBlueButtonAPIClient
+namespace BBB.NET.CORE.BigBlueButtonAPIClients
 {
     public class BigBlueButtonAPIClient
     {
@@ -315,14 +331,148 @@ namespace BBB.NET.CORE.BigBlueButtonAPIClient
         #endregion
 
 
+        #region Polling Management
+        public async Task<StartPollResponse> StartPollAsync(StartPollRequest request)
+        {
+            return await HttpGetAsync<StartPollResponse>("startPoll", request);
+        }
+
+        public async Task<StopPollResponse> StopPollAsync(StopPollRequest request)
+        {
+            return await HttpGetAsync<StopPollResponse>("stopPoll", request);
+        }
+
+        public async Task<GetPollResultsResponse> GetPollResultsAsync(GetPollResultsRequest request)
+        {
+            return await HttpGetAsync<GetPollResultsResponse>("getPollResults", request);
+        }
+
+        public async Task<DeletePollResponse> DeletePollAsync(DeletePollRequest request)
+        {
+            return await HttpGetAsync<DeletePollResponse>("deletePoll", request);
+        }
+
+        public async Task<ListPollsResponse> ListPollsAsync(ListPollsRequest request)
+        {
+            return await HttpGetAsync<ListPollsResponse>("listPolls", request);
+        }
+        #endregion
 
 
+        #region Reporting Management
+        public async Task<GetMeetingStatsResponse> GetMeetingStatsAsync(GetMeetingStatsRequest request)
+        {
+            return await HttpGetAsync<GetMeetingStatsResponse>("getMeetingStats", request);
+        }
+
+        public async Task<ExportMeetingDataResponse> ExportMeetingDataAsync(ExportMeetingDataRequest request)
+        {
+            return await HttpGetAsync<ExportMeetingDataResponse>("exportMeetingData", request);
+        }
+
+        public async Task<GetServerStatsResponse> GetServerStatsAsync(GetServerStatsRequest request)
+        {
+            return await HttpGetAsync<GetServerStatsResponse>("getServerStats", request);
+        }
+        #endregion
 
 
+        #region Modules Management
+        public async Task<EnableModuleResponse> EnableModuleAsync(EnableModuleRequest request)
+        {
+            return await HttpGetAsync<EnableModuleResponse>("enableModule", request);
+        }
+
+        public async Task<DisableModuleResponse> DisableModuleAsync(DisableModuleRequest request)
+        {
+            return await HttpGetAsync<DisableModuleResponse>("disableModule", request);
+        }
+
+        public async Task<ListModulesResponse> ListModulesAsync(ListModulesRequest request)
+        {
+            return await HttpGetAsync<ListModulesResponse>("listModules", request);
+        }
+        #endregion
 
 
+        #region Health Management
+        public async Task<CheckHealthResponse> CheckHealthAsync(CheckHealthRequest request)
+        {
+            return await HttpGetAsync<CheckHealthResponse>("checkHealth", request);
+        }
+
+        public async Task<GetHealthDetailsResponse> GetHealthDetailsAsync(GetHealthDetailsRequest request)
+        {
+            return await HttpGetAsync<GetHealthDetailsResponse>("getHealthDetails", request);
+        }
+        #endregion
 
 
+        #region Whiteboard Management
+        public async Task<EnableWhiteboardResponse> EnableWhiteboardAsync(EnableWhiteboardRequest request)
+        {
+            return await HttpGetAsync<EnableWhiteboardResponse>("enableWhiteboard", request);
+        }
+
+        public async Task<DisableWhiteboardResponse> DisableWhiteboardAsync(DisableWhiteboardRequest request)
+        {
+            return await HttpGetAsync<DisableWhiteboardResponse>("disableWhiteboard", request);
+        }
+
+        public async Task<ClearWhiteboardResponse> ClearWhiteboardAsync(ClearWhiteboardRequest request)
+        {
+            return await HttpGetAsync<ClearWhiteboardResponse>("clearWhiteboard", request);
+        }
+
+        public async Task<GetWhiteboardStatusResponse> GetWhiteboardStatusAsync(GetWhiteboardStatusRequest request)
+        {
+            return await HttpGetAsync<GetWhiteboardStatusResponse>("getWhiteboardStatus", request);
+        }
+        #endregion
+
+
+        #region Audit Log Management
+        public async Task<GetAuditLogsResponse> GetAuditLogsAsync(GetAuditLogsRequest request)
+        {
+            return await HttpGetAsync<GetAuditLogsResponse>("getAuditLogs", request);
+        }
+
+        public async Task<ExportAuditLogsResponse> ExportAuditLogsAsync(ExportAuditLogsRequest request)
+        {
+            return await HttpGetAsync<ExportAuditLogsResponse>("exportAuditLogs", request);
+        }
+        #endregion
+
+
+        #region Virtual Background Management
+        public async Task<AddVirtualBackgroundResponse> AddVirtualBackgroundAsync(AddVirtualBackgroundRequest request)
+        {
+            return await HttpPostFileAsync<AddVirtualBackgroundResponse>("addVirtualBackground", request);
+        }
+
+        public async Task<RemoveVirtualBackgroundResponse> RemoveVirtualBackgroundAsync(RemoveVirtualBackgroundRequest request)
+        {
+            return await HttpGetAsync<RemoveVirtualBackgroundResponse>("removeVirtualBackground", request);
+        }
+
+        public async Task<ListVirtualBackgroundsResponse> ListVirtualBackgroundsAsync(ListVirtualBackgroundsRequest request)
+        {
+            return await HttpGetAsync<ListVirtualBackgroundsResponse>("listVirtualBackgrounds", request);
+        }
+        #endregion
+
+
+        #region Recording Management
+        public async Task<GetRecordingInfoResponse> GetRecordingInfoAsync(GetRecordingInfoRequest request)
+        {
+            return await HttpGetAsync<GetRecordingInfoResponse>("getRecordingInfo", request);
+        }
+
+        public async Task<GetRecordingTextTracksResponse> GetRecordingTextTracksAsync(GetRecordingTextTracksRequest request)
+        {
+            return await HttpGetAsync<GetRecordingTextTracksResponse>("getRecordingTextTracks", request);
+        }
+        #endregion
 
 
 

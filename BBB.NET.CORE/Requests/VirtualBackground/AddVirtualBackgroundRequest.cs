@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BBB.NET.CORE.Requests.VirtualBackground
 {
-    public class AddVirtualBackgroundRequest : BaseRequest
+    public class AddVirtualBackgroundRequest : BasePostFileRequest
     {
         public string meetingID { get; set; }
     }

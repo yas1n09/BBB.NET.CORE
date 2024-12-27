@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BBB.NET.CORE.BigBlueButtonAPIClient
+namespace BBB.NET.CORE.BigBlueButtonAPIClients
 {
     public class BigBlueButtonAPISettings
     {

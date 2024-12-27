@@ -1,5 +1,5 @@
 ﻿using BBB.NET.CORE.BaseClasses;
-using BBB.NET.CORE.BigBlueButtonAPIClient;
+using BBB.NET.CORE.BigBlueButtonAPIClients;
 using BBB.NET.CORE.Entities;
 using System;
 using System.Collections.Generic;
