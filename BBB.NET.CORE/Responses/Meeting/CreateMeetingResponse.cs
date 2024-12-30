@@ -15,7 +15,7 @@ namespace BBB.NET.CORE.Responses.Meeting
         public string moderatorPW { get; set; }
         public string attendeePW { get; set; }
         public long createTime { get; set; }
-        public bool voiceBridge { get; set; }
+        public int voiceBridge { get; set; }
         public string message { get; set; }
     }
 }
