@@ -14,8 +14,4 @@
     <ProjectReference Include="..\BBB.NET.CORE\BBB.NET.CORE.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
 </Project>

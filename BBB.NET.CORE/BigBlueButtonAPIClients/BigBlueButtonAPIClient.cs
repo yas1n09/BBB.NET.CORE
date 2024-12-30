@@ -46,7 +46,7 @@ namespace BBB.NET.CORE.BigBlueButtonAPIClients
 {
     public class BigBlueButtonAPIClient
     {
-        
+
         private readonly HttpClient httpClient;
         private readonly UrlBuilder urlBuilder;
 
@@ -55,7 +55,99 @@ namespace BBB.NET.CORE.BigBlueButtonAPIClients
         {
             this.urlBuilder = new UrlBuilder(settings);
             this.httpClient = httpClient;
+
+
+
         }
+
+
+
+
+
+        #region HTTP Methods
+        private async Task<T> HttpGetAsync<T>(string method, BaseRequest request)
+        {
+            var url = urlBuilder.Build(method, request);
+            var result = await HttpGetAsync<T>(url);
+            return result;
+        }
+
+        private async Task<T> HttpGetAsync<T>(string url)
+        {
+            // HTTP isteği gönder
+            var response = await httpClient.GetAsync(url);
+
+            // Yanıtı metin olarak oku
+            var xmlOrJson = await response.Content.ReadAsStringAsync();
+
+            // Yanıtı logla
+            Console.WriteLine("Response XML/JSON: " + xmlOrJson);
+
+            // Eğer tip string ise yanıtı direkt döndür
+            if (typeof(T) == typeof(string)) return (T)(object)xmlOrJson;
+
+            // Eğer XML ise deserialize et
+            if (xmlOrJson.StartsWith("<"))
+            {
+                return XmlHelper.FromXml<T>(xmlOrJson);
+            }
+            else
+            {
+                // JSON formatı varsa işle
+                var wrapper = JsonConvert.DeserializeObject<ResponseJsonWrapper<T>>(xmlOrJson);
+                return wrapper.response;
+            }
+        }
+
+
+
+        private async Task<T> HttpPostFileAsync<T>(string method, BasePostFileRequest request)
+        {
+            var url = urlBuilder.Build(method, request);
+            var cts = new CancellationTokenSource();
+            using (var content = new MultipartFormDataContent())
+            {
+                content.Add(new ByteArrayContent(request.file.FileData), request.file.Name, request.file.FileName);
+
+                var response = await httpClient.PostAsync(url, content, cts.Token);
+                var xmlOrJson = await response.Content.ReadAsStringAsync();
+                if (typeof(T) == typeof(string)) return (T)(object)xmlOrJson;
+
+                // Most APIs return XML string.
+                // The getRecordingTextTracks API may return JSON string.
+                if (xmlOrJson.StartsWith("<"))
+                {
+                    return XmlHelper.FromXml<T>(xmlOrJson);
+                }
+                else
+                {
+                    var wrapper = JsonConvert.DeserializeObject<ResponseJsonWrapper<T>>(xmlOrJson);
+                    return wrapper.response;
+                }
+
+            }
+
+        }
+
+        #endregion
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
         #region Meeting Management
@@ -76,6 +168,7 @@ namespace BBB.NET.CORE.BigBlueButtonAPIClients
 
         public async Task<IsMeetingRunningResponse> IsMeetingRunningAsync(IsMeetingRunningRequest request)
         {
+            if (request == null) throw new ArgumentNullException("request");
             return await HttpGetAsync<IsMeetingRunningResponse>("isMeetingRunning", request);
         }
 
@@ -395,17 +488,17 @@ namespace BBB.NET.CORE.BigBlueButtonAPIClients
         #endregion
 
 
-        #region Health Management
-        public async Task<CheckHealthResponse> CheckHealthAsync(CheckHealthRequest request)
-        {
-            return await HttpGetAsync<CheckHealthResponse>("checkHealth", request);
-        }
+        //#region Health Management
+        //public async Task<CheckHealthResponse> CheckHealthAsync(CheckHealthRequest request)
+        //{
+        //    return await HttpGetAsync<CheckHealthResponse>("checkHealth", request);
+        //}
 
-        public async Task<GetHealthDetailsResponse> GetHealthDetailsAsync(GetHealthDetailsRequest request)
-        {
-            return await HttpGetAsync<GetHealthDetailsResponse>("getHealthDetails", request);
-        }
-        #endregion
+        //public async Task<GetHealthDetailsResponse> GetHealthDetailsAsync(GetHealthDetailsRequest request)
+        //{
+        //    return await HttpGetAsync<GetHealthDetailsResponse>("getHealthDetails", request);
+        //}
+        //#endregion
 
 
         #region Whiteboard Management
@@ -476,60 +569,7 @@ namespace BBB.NET.CORE.BigBlueButtonAPIClients
 
 
 
-        #region HTTP Methods
-        private async Task<T> HttpGetAsync<T>(string method, BaseRequest request)
-        {
-            var url = urlBuilder.Build(method, request);
-            var result = await HttpGetAsync<T>(url);
-            return result;
-        }
-
-        private async Task<T> HttpGetAsync<T>(string url)
-        {
-            var response = await httpClient.GetAsync(url);
-            var xmlOrJson = await response.Content.ReadAsStringAsync();
-
-            Console.WriteLine("Response XML/JSON: " + xmlOrJson);
-
-            if (typeof(T) == typeof(string)) return (T)(object)xmlOrJson;
-
-            if (xmlOrJson.StartsWith("<"))
-            {
-                return XmlHelper.FromXml<T>(xmlOrJson);
-            }
-            else
-            {
-                var wrapper = JsonConvert.DeserializeObject<ResponseJsonWrapper<T>>(xmlOrJson);
-                return wrapper.response;
-            }
-        }
-
-
-
-        private async Task<T> HttpPostFileAsync<T>(string method, BasePostFileRequest request)
-        {
-            var url = urlBuilder.Build(method, request);
-            using var content = new MultipartFormDataContent
-    {
-        { new ByteArrayContent(request.file.FileData), "file", request.file.FileName }
-    };
-            var response = await httpClient.PostAsync(url, content);
-            var xmlOrJson = await response.Content.ReadAsStringAsync();
-
-            if (typeof(T) == typeof(string)) return (T)(object)xmlOrJson;
-
-            if (xmlOrJson.StartsWith("<"))
-            {
-                return XmlHelper.FromXml<T>(xmlOrJson);
-            }
-            else
-            {
-                var wrapper = JsonConvert.DeserializeObject<ResponseJsonWrapper<T>>(xmlOrJson);
-                return wrapper.response;
-            }
-        }
-
-        #endregion
+        
 
     }
 }

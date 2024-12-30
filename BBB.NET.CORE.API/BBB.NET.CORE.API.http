@@ -1,6 +1,0 @@
-@BBB.NET.CORE.API_HostAddress = http://localhost:5173
-
-GET {{BBB.NET.CORE.API_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

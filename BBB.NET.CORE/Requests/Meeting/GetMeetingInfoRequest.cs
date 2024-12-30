@@ -10,5 +10,6 @@ namespace BBB.NET.CORE.Requests.Meeting
     public class GetMeetingInfoRequest : BaseRequest
     {
         public string meetingID { get; set; }
+        public string password { get; set; }
     }
 }

@@ -43,8 +43,6 @@ namespace BBB.NET.CORE.Helpers
             return ToXml(errorResponse);
         }
 
-
-
         // Nesneyi XML'e Dönüştürme (Serialize)
         public static string ToXml<T>(T value)
         {

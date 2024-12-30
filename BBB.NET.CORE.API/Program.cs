@@ -1,12 +1,11 @@
 using BBB.NET.CORE.BigBlueButtonAPIClients;
+
 using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
-
 
 // BigBlueButtonAPISettings yapýlandýrmasý
 builder.Services.AddOptions();
@@ -19,15 +18,14 @@ builder.Services.AddScoped<BigBlueButtonAPIClient>(provider =>
     return new BigBlueButtonAPIClient(settings, factory.CreateClient());
 });
 
-
-
-
-
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
