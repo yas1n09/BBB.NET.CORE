@@ -5,48 +5,49 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace BBB.NET.CORE.Requests.Meeting
 {
+    [Serializable, XmlRoot("request")]
     public class CreateMeetingRequest : BaseRequest
     {
         public string name { get; set; }
         public string meetingID { get; set; }
         public bool record { get; set; }
+        public bool? muteOnStart { get; set; }  // Başlangıçta tüm katılımcıları susturma
+        public bool? webcamsOnlyForModerator { get; set; }  // Sadece moderatör için webcam
+
+        // Aşağıdaki alanlar şimdilik devre dışı bırakıldı
         public int duration { get; set; }
-        public string moderatorPW { get; set; }
-        public string attendeePW { get; set; }
-        public string welcome { get; set; }
-        public string dialNumber { get; set; }
-
-
-        
-        public int? voiceBridge { get; set; }  // Ses köprüsü numarası (isteğe bağlı)
-        public int? maxParticipants { get; set; }  // Maksimum katılımcı sayısı (isteğe bağlı)
-        public string logoutURL { get; set; }  // Çıkış URL'si (isteğe bağlı)
-        public bool? allowOverrideClientSettingsOnCreateCall { get; set; }  // İstemci ayarlarını geçersiz kılma izni (yeni)
-        public bool? isBreakout { get; set; }  // Breakout odası (gereklidir)
-        public string parentMeetingID { get; set; }  // Ana toplantı ID'si (gereklidir)
-        public int? sequence { get; set; }  // Breakout odası sırası (gereklidir)
-        public MetaData meta { get; set; }  // Meta veriler (isteğe bağlı)
-        public bool? freeJoin { get; set; }  // Serbest katılım (isteğe bağlı)
-        public bool? autoStartRecording { get; set; }  // Otomatik kayıt başlatma (isteğe bağlı)
-        public bool? allowStartStopRecording { get; set; }  // Kayıt başlatma/durdurma izni (isteğe bağlı)
-        public bool? webcamsOnlyForModerator { get; set; }  // Sadece moderatör için webcam (isteğe bağlı)
-        public string logo { get; set; }  // Logo URL'si (isteğe bağlı)
-        public string bannerText { get; set; }  // Banner metni (isteğe bağlı)
-        public string bannerColor { get; set; }  // Banner rengi (isteğe bağlı)
-        public string copyright { get; set; }  // Telif hakkı metni (isteğe bağlı)
-        public bool? muteOnStart { get; set; }  // Başlangıçta tüm katılımcıları susturma (isteğe bağlı)
-        public bool? allowModsToUnmuteUsers { get; set; }  // Moderatörlerin kullanıcıları açmasına izin verme (isteğe bağlı)
-        public bool? lockSettingsDisableCam { get; set; }  // Kamerayı devre dışı bırakma (isteğe bağlı)
-        public bool? lockSettingsDisableMic { get; set; }  // Mikrafonu devre dışı bırakma (isteğe bağlı)
-        public bool? lockSettingsDisablePrivateChat { get; set; }  // Özel sohbeti devre dışı bırakma (isteğe bağlı)
-        public bool? lockSettingsDisablePublicChat { get; set; }  // Genel sohbeti devre dışı bırakma (isteğe bağlı)
-        public bool? lockSettingsDisableNote { get; set; }  // Notları devre dışı bırakma (isteğe bağlı)
-        public bool? lockSettingsLockedLayout { get; set; }  // Düzeni kilitleme (isteğe bağlı)
-        public bool? lockSettingsLockOnJoin { get; set; }  // Katılımcıların katılmasında kilit açma (isteğe bağlı)
-        public bool? lockSettingsLockOnJoinConfigurable { get; set; }  // Katılımcı kilidi yapılandırılabilir (isteğe bağlı)
-        public string guestPolicy { get; set; }  // Konuk politikası (isteğe bağlı)
+        // public string moderatorPW { get; set; }
+        // public string attendeePW { get; set; }
+        // public string welcome { get; set; }
+        // public string dialNumber { get; set; }
+        // public int? voiceBridge { get; set; }
+        public int? maxParticipants { get; set; }
+        // public string logoutURL { get; set; }
+        // public bool? allowOverrideClientSettingsOnCreateCall { get; set; }
+        // public bool? isBreakout { get; set; }
+        // public string parentMeetingID { get; set; }
+        // public int? sequence { get; set; }
+        // public MetaData meta { get; set; }
+        // public bool? freeJoin { get; set; }
+        // public bool? autoStartRecording { get; set; }
+        // public bool? allowStartStopRecording { get; set; }
+        // public string logo { get; set; }
+        // public string bannerText { get; set; }
+        // public string bannerColor { get; set; }
+        // public string copyright { get; set; }
+        // public bool? allowModsToUnmuteUsers { get; set; }
+        // public bool? lockSettingsDisableCam { get; set; }
+        // public bool? lockSettingsDisableMic { get; set; }
+        // public bool? lockSettingsDisablePrivateChat { get; set; }
+        // public bool? lockSettingsDisablePublicChat { get; set; }
+        // public bool? lockSettingsDisableNote { get; set; }
+        // public bool? lockSettingsLockedLayout { get; set; }
+        // public bool? lockSettingsLockOnJoin { get; set; }
+        // public bool? lockSettingsLockOnJoinConfigurable { get; set; }
+        // public string guestPolicy { get; set; }
     }
 }

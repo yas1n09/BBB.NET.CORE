@@ -56,11 +56,7 @@ namespace BBB.NET.CORE.BigBlueButtonAPIClients
             this.urlBuilder = new UrlBuilder(settings);
             this.httpClient = httpClient;
 
-
-
         }
-
-
 
 
 
@@ -153,6 +149,9 @@ namespace BBB.NET.CORE.BigBlueButtonAPIClients
         #region Meeting Management
         public async Task<CreateMeetingResponse> CreateMeetingAsync(CreateMeetingRequest request)
         {
+            //if (request == null) throw new ArgumentNullException("request");
+            if (request == null) throw new ArgumentNullException(nameof(request));
+
             return await HttpGetAsync<CreateMeetingResponse>("create", request);
         }
 
@@ -569,7 +568,7 @@ namespace BBB.NET.CORE.BigBlueButtonAPIClients
 
 
 
-        
+
 
     }
 }
