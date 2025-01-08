@@ -57,8 +57,13 @@ namespace BBB.NET.CORE.Helpers
                 using (var stringWriter = new StringWriter())
                 {
                     serializer.Serialize(stringWriter, value);
-                    Console.WriteLine($"Serialized XML: {stringWriter.ToString()}"); // Loglama
-                    return stringWriter.ToString();
+                    var xmlResult = stringWriter.ToString();
+
+                    // &amp; karakterlerini & ile değiştir
+                    xmlResult = xmlResult.Replace("&amp;", "&");
+
+                    Console.WriteLine($"Serialized XML: {xmlResult}"); // Loglama
+                    return xmlResult;
                 }
             }
             catch (InvalidOperationException ex)
@@ -72,5 +77,6 @@ namespace BBB.NET.CORE.Helpers
                 return $"<ErrorResponse><Message>Unexpected error</Message><Details>{ex.Message}</Details></ErrorResponse>";
             }
         }
+
     }
 }

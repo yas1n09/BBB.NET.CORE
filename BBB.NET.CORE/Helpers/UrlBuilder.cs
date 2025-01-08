@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace BBB.NET.CORE.Helpers
 {
@@ -18,77 +19,54 @@ namespace BBB.NET.CORE.Helpers
             this.settings = settings;
         }
 
-
-
-        /// <summary>
-        /// URL oluşturur.
-        /// </summary>
-        /// <param name="method">BigBlueButton API metod adı.</param>
-        /// <param name="parameters">Sorgu parametreleri (checksum dahil edilmemiş haliyle)</param>
-        /// <param name="onlyQueryString">Eğer true ise sadece sorgu string'ini döndürür, tam URL döndürmez.</param>
-        /// <returns>Oluşturulmuş URL</returns>
         private string Build(string method, string parameters, bool onlyQueryString = false)
         {
             if (parameters == null) parameters = string.Empty;
+
+            // &amp; hatasını engellemek için burada düzeltme yapıyoruz
+            parameters = parameters.Replace("&amp;", "&");
+
             var checksum = GetChecksum(method, parameters);
 
-            // Eğer sadece sorgu string'ini istiyorsa, checksum ile birlikte döndürür.
+            string url;
             if (onlyQueryString)
             {
                 if (string.IsNullOrEmpty(parameters))
                 {
-                    return string.Format("checksum={0}", checksum);
+                    url = $"checksum={checksum}";
                 }
                 else
                 {
-                    return string.Format("{0}&checksum={1}", parameters, checksum);
+                    url = $"{parameters}&checksum={checksum}";
                 }
             }
             else
             {
-                // Tam URL döndürülür
                 if (string.IsNullOrEmpty(parameters))
                 {
-                    return string.Format("{0}{1}?checksum={2}", settings.ServerAPIUrl, method, checksum);
+                    url = $"{settings.ServerAPIUrl}{method}?checksum={checksum}";
                 }
                 else
                 {
-                    return string.Format("{0}{1}?{2}&checksum={3}", settings.ServerAPIUrl, method, parameters, checksum);
+                    url = $"{settings.ServerAPIUrl}{method}?{parameters}&checksum={checksum}";
                 }
             }
 
+            // Son aşamada &amp;'ı & ile değiştir
+            return url.Replace("&amp;", "&");
         }
 
-        /// <summary>
-        /// URL oluşturur.
-        /// </summary>
-        /// <param name="method">BigBlueButton API metod adı.</param>
-        /// <param name="request">İstek verisi, sorgu parametrelerine dönüştürülür.</param>
-        /// <param name="onlyQueryString">Sadece sorgu string'i döndürülüp döndürülmeyeceğini belirler.</param>
-        /// <returns>Oluşturulmuş URL</returns>
         public string Build(string method, BaseRequest request, bool onlyQueryString = false)
         {
             string parameters = BuildParameters(method, request);
             return Build(method, parameters, onlyQueryString);
         }
 
-        /// <summary>
-        /// Belirtilen metod için temel URL'yi döndürür.
-        /// Örnek: http://yourserver.com/bigbluebutton/api/create
-        /// </summary>
-        /// <param name="method">BigBlueButton API metod adı.</param>
-        /// <returns>Temel URL</returns>
         public string BuildMethodUrl(string method)
         {
             return settings.ServerAPIUrl + method;
         }
 
-        /// <summary>
-        /// Parametreleri oluşturur.
-        /// </summary>
-        /// <param name="method">API metodu</param>
-        /// <param name="request">İstek verisi</param>
-        /// <returns>Oluşturulmuş sorgu parametreleri</returns>
         private string BuildParameters(string method, BaseRequest request)
         {
             string parameters = string.Empty;
@@ -96,59 +74,42 @@ namespace BBB.NET.CORE.Helpers
             {
                 var items = new List<KeyValuePair<string, string>>();
 
-                string sValue;
-                // Request sınıfındaki tüm public özelliklere bakılır
-                foreach (System.Reflection.PropertyInfo p in request.GetType().GetProperties(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public))
+                foreach (var p in request.GetType().GetProperties(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public))
                 {
                     var value = p.GetValue(request, null);
                     if (value != null)
                     {
-                        if (value is FileContentData) continue;
-                        if (value is MetaData)
+                        string sValue = value switch
                         {
-                            var metaData = (MetaData)value;
-                            if (metaData.Count > 0)
-                            {
-                                foreach (var key in metaData.Keys)
-                                {
-                                    items.Add(new KeyValuePair<string, string>("meta_" + key, metaData[key]));
-                                }
+                            bool boolValue => boolValue ? "true" : "false",
+                            _ => Uri.EscapeDataString(value.ToString())  // Manuel URL encode
+                        };
 
-                            }
-                        }
-                        else
-                        {
-                            if (value.Equals(true)) sValue = "true";
-                            else if (value.Equals(false)) sValue = "false";
-                            else sValue = value.ToString();
-
-                            items.Add(new KeyValuePair<string, string>(p.Name, sValue));
-                        }
-
+                        items.Add(new KeyValuePair<string, string>(p.Name, sValue));
                     }
                 }
-                // Parametreler sıralanır ve string formatında döndürülür
+
                 if (items.Count > 0)
                 {
                     items.Sort((x, y) => x.Key.CompareTo(y.Key));
-                    var c = new FormUrlEncodedContent(items);
-                    parameters = c.ReadAsStringAsync().Result;
+                    parameters = string.Join("&", items.Select(i => $"{i.Key}={i.Value}"));
                 }
             }
+
+            // &amp; hatasını engellemek için burada düzeltme yapıyoruz
+            parameters = parameters.Replace("&amp;", "&");
+
             return parameters;
         }
 
-        /// <summary>
-        /// Checksum hesaplar.
-        /// </summary>
-        /// <param name="method">API metodu</param>
-        /// <param name="parameters">Parametreler</param>
-        /// <returns>Checksum</returns>
         private string GetChecksum(string method, string parameters)
         {
             if (parameters == null) parameters = string.Empty;
-            return HashHelper.Sha1Hash(method + parameters, settings.SharedSecret);
+
+            // Checksum için method ve parametreler birleştiriliyor
+            var checksumBase = $"{method}{parameters}";
+
+            return HashHelper.Sha1Hash(checksumBase, settings.SharedSecret);
         }
     }
-
 }

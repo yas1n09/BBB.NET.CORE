@@ -8,11 +8,9 @@ using System.Xml.Serialization;
 namespace BBB.NET.CORE.DTOs
 {
     [XmlRoot("response")]
-    public class ChatMessageDto
+    public class MeetingEndDto
     {
-        public string messageID { get; set; }
-        public string sender { get; set; }
-        public string content { get; set; }
-        public long timestamp { get; set; }
+        public string MeetingID { get; set; }
+        public string Message { get; set; }
     }
 }

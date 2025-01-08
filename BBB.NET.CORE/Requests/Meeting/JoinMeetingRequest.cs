@@ -4,13 +4,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace BBB.NET.CORE.Requests.Meeting
 {
+    [Serializable, XmlRoot("request")]
     public class JoinMeetingRequest : BaseRequest
     {
-        public string meetingID { get; set; }
         public string fullName { get; set; }
+        public string meetingID { get; set; }
+        
         public string password { get; set; }
         public string createTime { get; set; }
         public string userID { get; set; }

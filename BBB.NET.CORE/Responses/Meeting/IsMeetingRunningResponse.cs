@@ -11,7 +11,7 @@ namespace BBB.NET.CORE.Responses.Meeting
     [XmlRoot("response")]
     public class IsMeetingRunningResponse : BaseResponse
     {
-        public bool running { get; set; }
+        public bool? running { get; set; }
         //public string meetingID { get; set; }
     }
 }

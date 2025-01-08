@@ -130,22 +130,6 @@ namespace BBB.NET.CORE.BigBlueButtonAPIClients
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         #region Meeting Management
         public async Task<CreateMeetingResponse> CreateMeetingAsync(CreateMeetingRequest request)
         {
@@ -176,10 +160,14 @@ namespace BBB.NET.CORE.BigBlueButtonAPIClients
             return await HttpGetAsync<GetMeetingsResponse>("getMeetings");
         }
 
-        public async Task<string> JoinMeetingAsync(JoinMeetingRequest request)
+        public async Task<string> GetJoinMeetingUrl(JoinMeetingRequest request)
         {
-            var url = urlBuilder.Build("join", request);
-            return url;
+            //var url = urlBuilder.Build("join", request);
+            //return url;
+
+            if (request.redirect == false) request.redirect = true;
+
+            return urlBuilder.Build("join", request);
         }
         #endregion
 
