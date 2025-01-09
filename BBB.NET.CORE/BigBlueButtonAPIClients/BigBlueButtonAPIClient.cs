@@ -56,6 +56,12 @@ namespace BBB.NET.CORE.BigBlueButtonAPIClients
             this.urlBuilder = new UrlBuilder(settings);
             this.httpClient = httpClient;
 
+
+            //if (httpClient.BaseAddress == null)
+            //{
+            //    httpClient.BaseAddress = new Uri(settings.ServerAPIUrl);
+            //}
+
         }
 
 
@@ -254,49 +260,44 @@ namespace BBB.NET.CORE.BigBlueButtonAPIClients
 
 
         #region Breakout Room Management
-        public async Task<CreateBreakoutRoomsResponse> CreateBreakoutRoomsAsync(CreateBreakoutRoomsRequest request)
+        public async Task<CreateBreakoutRoomsResponse> CreateBreakoutRoomsAsync(CreateBreakoutRoomRequest request)
         {
             return await HttpGetAsync<CreateBreakoutRoomsResponse>("createBreakoutRooms", request);
         }
 
+        public async Task<CreateBreakoutRoomsResponse> CreateBreakoutRoomsAsync(CreateBreakoutRoomRequest request)
+        {
+            // API çağrısı yapılacak
+        }
+
         public async Task<GetBreakoutRoomsResponse> GetBreakoutRoomsAsync(GetBreakoutRoomsRequest request)
         {
-            return await HttpGetAsync<GetBreakoutRoomsResponse>("getBreakoutRooms", request);
+            // API çağrısı yapılacak
         }
 
-        public async Task<EndBreakoutRoomsResponse> EndBreakoutRoomsAsync(EndBreakoutRoomsRequest request)
+        public async Task<string> GetJoinBreakoutRoomUrl(JoinBreakoutRoomRequest request)
         {
-            return await HttpGetAsync<EndBreakoutRoomsResponse>("endBreakoutRooms", request);
+            // API çağrısı yapılacak
         }
 
-        public async Task<JoinBreakoutRoomResponse> JoinBreakoutRoomAsync(JoinBreakoutRoomRequest request)
+        public async Task<EndBreakoutRoomResponse> EndBreakoutRoomAsync(EndBreakoutRoomRequest request)
         {
-            return await HttpGetAsync<JoinBreakoutRoomResponse>("joinBreakoutRoom", request);
+            // API çağrısı yapılacak
         }
 
-        public async Task<AssignUserToBreakoutRoomResponse> AssignUserToBreakoutRoomAsync(AssignUserToBreakoutRoomRequest request)
+        public async Task<GetBreakoutRoomInfoResponse> GetBreakoutRoomInfoAsync(GetBreakoutRoomInfoRequest request)
         {
-            return await HttpGetAsync<AssignUserToBreakoutRoomResponse>("assignUserToBreakoutRoom", request);
+            // API çağrısı yapılacak
         }
 
-        public async Task<BreakoutRoomInfoResponse> BreakoutRoomInfoAsync(BreakoutRoomInfoRequest request)
+        public async Task<UpdateBreakoutRoomResponse> UpdateBreakoutRoomAsync(UpdateBreakoutRoomRequest request)
         {
-            return await HttpGetAsync<BreakoutRoomInfoResponse>("getBreakoutRoomInfo", request);
+            // API çağrısı yapılacak
         }
 
-        public async Task<BreakoutRoomParticipantsResponse> BreakoutRoomParticipantsAsync(BreakoutRoomParticipantsRequest request)
+        public async Task<DeleteBreakoutRoomResponse> DeleteBreakoutRoomAsync(DeleteBreakoutRoomRequest request)
         {
-            return await HttpGetAsync<BreakoutRoomParticipantsResponse>("getBreakoutRoomParticipants", request);
-        }
-
-        public async Task<CloseBreakoutRoomResponse> CloseBreakoutRoomAsync(CloseBreakoutRoomRequest request)
-        {
-            return await HttpGetAsync<CloseBreakoutRoomResponse>("closeBreakoutRoom", request);
-        }
-
-        public async Task<ExtendBreakoutRoomResponse> ExtendBreakoutRoomAsync(ExtendBreakoutRoomRequest request)
-        {
-            return await HttpGetAsync<ExtendBreakoutRoomResponse>("extendBreakoutRoom", request);
+            // API çağrısı yapılacak
         }
         #endregion
 

@@ -8,10 +8,9 @@ using System.Xml.Serialization;
 namespace BBB.NET.CORE.DTOs
 {
     [XmlRoot("response")]
-    public class MeetingStatusDto
+    public class BreakoutRoomErrorResponseDto
     {
-        public string MeetingID { get; set; }
-        public bool IsRunning { get; set; }
         public string Message { get; set; }
+        public string Details { get; set; }
     }
 }
