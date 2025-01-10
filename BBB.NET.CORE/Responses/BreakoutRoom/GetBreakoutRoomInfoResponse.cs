@@ -15,5 +15,6 @@ namespace BBB.NET.CORE.Responses.BreakoutRoom
         public int duration { get; set; }
         public long createTime { get; set; }
         public string message { get; set; }
+
     }
 }

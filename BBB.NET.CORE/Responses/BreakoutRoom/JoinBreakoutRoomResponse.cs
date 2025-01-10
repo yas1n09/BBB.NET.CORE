@@ -9,8 +9,10 @@ namespace BBB.NET.CORE.Responses.BreakoutRoom
 {
     public class JoinBreakoutRoomResponse : BaseResponse
     {
-        public string breakoutRoomID { get; set; }
+        
         public string joinUrl { get; set; }
         public string message { get; set; }
+        public bool Redirect { get; set; }
+
     }
 }

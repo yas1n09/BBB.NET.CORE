@@ -11,6 +11,7 @@ namespace BBB.NET.CORE.Responses.BreakoutRoom
     {
         public string parentMeetingID { get; set; }
         public List<string> breakoutRoomIDs { get; set; }
+        public List<string> breakoutRooms { get; set; } // Yeni özellik
         public string message { get; set; }
     }
 }

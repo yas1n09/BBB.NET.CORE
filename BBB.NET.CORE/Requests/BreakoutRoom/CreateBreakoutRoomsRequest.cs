@@ -10,12 +10,14 @@ namespace BBB.NET.CORE.Requests.BreakoutRoom
     public class CreateBreakoutRoomsRequest : BaseRequest
     {
         public string parentMeetingID { get; set; }
-        public int? sequence { get; set; }
+        public int roomCount { get; set; }
         public int durationInMinutes { get; set; }
         public List<string> attendeeIDs { get; set; }
-        public string userdata { get; set; }
-        public string meetingID { get; set; }
-        public int roomCount { get; set; }
+        public string moderatorPW { get; set; }
+        public string attendeePW { get; set; }
+        public string name { get; set; }
         public bool redirect { get; set; }
+
+
     }
 }

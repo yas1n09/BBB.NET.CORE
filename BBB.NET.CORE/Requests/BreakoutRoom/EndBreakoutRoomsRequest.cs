@@ -8,8 +8,9 @@ using System.Threading.Tasks;
 
 namespace BBB.NET.CORE.Requests.BreakoutRoom
 {
-    public class EndBreakoutRoomsRequest : EndMeetingRequest
+    public class EndBreakoutRoomsRequest : BaseRequest
     {
-        public string parentMeetingID { get; set; }
+        public string breakoutRoomID { get; set; }
+        public string password { get; set; }
     }
 }

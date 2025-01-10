@@ -260,45 +260,44 @@ namespace BBB.NET.CORE.BigBlueButtonAPIClients
 
 
         #region Breakout Room Management
+        
         public async Task<CreateBreakoutRoomsResponse> CreateBreakoutRoomsAsync(CreateBreakoutRoomRequest request)
         {
             return await HttpGetAsync<CreateBreakoutRoomsResponse>("createBreakoutRooms", request);
         }
-
-        public async Task<CreateBreakoutRoomsResponse> CreateBreakoutRoomsAsync(CreateBreakoutRoomRequest request)
-        {
-            // API çağrısı yapılacak
-        }
-
         public async Task<GetBreakoutRoomsResponse> GetBreakoutRoomsAsync(GetBreakoutRoomsRequest request)
         {
-            // API çağrısı yapılacak
+            return await HttpGetAsync<GetBreakoutRoomsResponse>("getBreakoutRooms", request);
         }
 
         public async Task<string> GetJoinBreakoutRoomUrl(JoinBreakoutRoomRequest request)
         {
-            // API çağrısı yapılacak
+            return urlBuilder.Build("joinBreakoutRoom", request);
         }
 
         public async Task<EndBreakoutRoomResponse> EndBreakoutRoomAsync(EndBreakoutRoomRequest request)
         {
-            // API çağrısı yapılacak
+            return await HttpGetAsync<EndBreakoutRoomResponse>("endBreakoutRoom", request);
         }
 
         public async Task<GetBreakoutRoomInfoResponse> GetBreakoutRoomInfoAsync(GetBreakoutRoomInfoRequest request)
         {
-            // API çağrısı yapılacak
+            return await HttpGetAsync<GetBreakoutRoomInfoResponse>("getBreakoutRoomInfo", request);
         }
 
         public async Task<UpdateBreakoutRoomResponse> UpdateBreakoutRoomAsync(UpdateBreakoutRoomRequest request)
         {
-            // API çağrısı yapılacak
+            return await HttpGetAsync<UpdateBreakoutRoomResponse>("updateBreakoutRoom", request);
         }
 
         public async Task<DeleteBreakoutRoomResponse> DeleteBreakoutRoomAsync(DeleteBreakoutRoomRequest request)
         {
-            // API çağrısı yapılacak
+            return await HttpGetAsync<DeleteBreakoutRoomResponse>("deleteBreakoutRoom", request);
         }
+
+
+
+
         #endregion
 
 
