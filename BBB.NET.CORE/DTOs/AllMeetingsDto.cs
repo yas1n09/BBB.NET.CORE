@@ -12,5 +12,6 @@ namespace BBB.NET.CORE.DTOs
     {
         public string Message { get; set; }
         public List<MeetingInfoDto> Meetings { get; set; }
+        
     }
 }

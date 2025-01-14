@@ -163,7 +163,9 @@ namespace BBB.NET.CORE.BigBlueButtonAPIClients
 
         public async Task<GetMeetingsResponse> GetMeetingsAsync()
         {
-            return await HttpGetAsync<GetMeetingsResponse>("getMeetings");
+            var url = urlBuilder.Build("getMeetings", null); // BaseRequest null olabilir çünkü parametre yok
+            return await HttpGetAsync<GetMeetingsResponse>(url);
+            
         }
 
         public async Task<string> GetJoinMeetingUrl(JoinMeetingRequest request)

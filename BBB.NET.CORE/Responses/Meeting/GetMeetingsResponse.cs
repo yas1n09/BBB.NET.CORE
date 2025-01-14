@@ -15,6 +15,7 @@ namespace BBB.NET.CORE.Responses.Meeting
         public List<MeetingInfo> meetings { get; set; }
         public string messageKey { get; set; }
         public string message { get; set; }
-       
+        
+
     }
 }

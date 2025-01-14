@@ -17,7 +17,7 @@ namespace BBB.NET.CORE.DTOs
         //[XmlElement("details")]
         public string Details { get; set; }
 
-        
+
     }
 }
 

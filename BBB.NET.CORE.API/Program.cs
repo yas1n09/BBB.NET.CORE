@@ -8,6 +8,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
 // BigBlueButtonAPISettings yapýlandýrmasý
+
+
 builder.Services.AddOptions();
 builder.Services.AddHttpClient();
 builder.Services.Configure<BigBlueButtonAPISettings>(builder.Configuration.GetSection("BigBlueButtonAPISettings"));
