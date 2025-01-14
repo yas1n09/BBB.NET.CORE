@@ -56,13 +56,13 @@ namespace BBB.NET.CORE.Helpers
             return url.Replace("&amp;", "&");
         }
 
-        private string Build(string method, BaseRequest request, bool onlyQueryString = false)
+        public string Build(string method, BaseRequest request, bool onlyQueryString = false)
         {
             string parameters = BuildParameters(method, request);
             return Build(method, parameters, onlyQueryString);
         }
 
-        private string BuildMethodUrl(string method)
+        public string BuildMethodUrl(string method)
         {
             return settings.ServerAPIUrl + method;
         }
