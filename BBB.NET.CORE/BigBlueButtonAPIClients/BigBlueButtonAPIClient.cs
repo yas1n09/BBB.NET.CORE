@@ -157,7 +157,7 @@ namespace BBB.NET.CORE.BigBlueButtonAPIClients
 
         public async Task<IsMeetingRunningResponse> IsMeetingRunningAsync(IsMeetingRunningRequest request)
         {
-            if (request == null) throw new ArgumentNullException("request");
+            if (request == null) throw new ArgumentNullException(nameof(request));
             return await HttpGetAsync<IsMeetingRunningResponse>("isMeetingRunning", request);
         }
 

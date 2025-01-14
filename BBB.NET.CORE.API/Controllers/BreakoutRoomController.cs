@@ -23,19 +23,34 @@ namespace BBB.NET.CORE.API.Controllers
         #region Create Breakout Rooms
         [HttpPost("create")]
         [Produces("application/xml")]
-        public async Task<IActionResult> CreateBreakoutRooms([FromBody] CreateBreakoutRoomRequest request)
+        public async Task<IActionResult> CreateBreakoutRooms(string parentMeetingID, int roomCount, int durationInMinutes, string moderatorPW, string attendeePW, string name = "Breakout Room", bool redirect = true)
         {
             try
             {
-                if (string.IsNullOrEmpty(request.parentMeetingID))
+                // Parametre doğrulama
+                if (string.IsNullOrEmpty(parentMeetingID))
                 {
-                    return BadRequest(XmlHelper.XmlErrorResponse<BreakoutRoomErrorResponseDto>(
+                    return BadRequest(XmlHelper.XmlErrorResponse<CreateBreakoutRoomsResponse>(
                         "Parent meeting ID cannot be null or empty.",
                         "Invalid input."));
                 }
 
+                // API istemcisi için istek nesnesi oluşturma
+                var request = new CreateBreakoutRoomRequest
+                {
+                    parentMeetingID = parentMeetingID,
+                    roomCount = roomCount,
+                    durationInMinutes = durationInMinutes,
+                    moderatorPW = moderatorPW,
+                    attendeePW = attendeePW,
+                    name = name,
+                    redirect = redirect
+                };
+
+                // Breakout odalarını oluşturmak için API çağrısı
                 var result = await client.CreateBreakoutRoomsAsync(request);
 
+                // Başarısız yanıt kontrolü
                 if (result.returncode == Returncode.FAILED)
                 {
                     return BadRequest(XmlHelper.XmlErrorResponse<CreateBreakoutRoomsResponse>(
@@ -43,20 +58,90 @@ namespace BBB.NET.CORE.API.Controllers
                         result.message));
                 }
 
-                return Ok(XmlHelper.ToXml(new CreateBreakoutRoomsResponse
+                // Başarılı yanıt oluşturma
+                var response = new CreateBreakoutRoomsResponse
                 {
-                    parentMeetingID = request.parentMeetingID,
+                    parentMeetingID = parentMeetingID,
                     breakoutRoomIDs = result.breakoutRoomIDs,
                     message = "Breakout rooms created successfully."
-                }));
+                };
+
+                return Ok(XmlHelper.ToXml(response));
             }
             catch (Exception ex)
             {
+                // Hata yanıtı döndürme
                 return StatusCode(500, XmlHelper.XmlErrorResponse<CreateBreakoutRoomsResponse>(
                     "An error occurred while creating breakout rooms.",
                     ex.Message));
             }
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        //public async Task<IActionResult> CreateBreakoutRooms(string parentMeetingID, int roomCount, int durationInMinutes, List<string> attendeeIDs, string moderatorPW, string attendeePW, string name = "Breakout Room", bool redirect = true)
+        //{
+        //    try
+        //    {
+        //        if (string.IsNullOrEmpty(parentMeetingID))
+        //        {
+        //            return BadRequest(XmlHelper.XmlErrorResponse<CreateBreakoutRoomsResponse>(
+        //                "Parent meeting ID cannot be null or empty.",
+        //                "Invalid input."));
+        //        }
+
+        //        var request = new CreateBreakoutRoomRequest
+        //        {
+        //            parentMeetingID = parentMeetingID,
+        //            roomCount = roomCount,
+        //            durationInMinutes = durationInMinutes,
+        //            attendeeIDs = attendeeIDs,
+        //            moderatorPW = moderatorPW,
+        //            attendeePW = attendeePW,
+        //            name = name,
+        //            redirect = redirect
+        //        };
+
+        //        var result = await client.CreateBreakoutRoomsAsync(request);
+
+        //        if (result.returncode == Returncode.FAILED)
+        //        {
+        //            return BadRequest(XmlHelper.XmlErrorResponse<CreateBreakoutRoomsResponse>(
+        //                "Failed to create breakout rooms.",
+        //                result.message));
+        //        }
+
+        //        var response = new CreateBreakoutRoomsResponse
+        //        {
+        //            parentMeetingID = parentMeetingID,
+        //            breakoutRoomIDs = result.breakoutRoomIDs,
+        //            message = "Breakout rooms created successfully."
+        //        };
+
+        //        return Ok(XmlHelper.ToXml(response));
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, XmlHelper.XmlErrorResponse<CreateBreakoutRoomsResponse>(
+        //            "An error occurred while creating breakout rooms.",
+        //            ex.Message));
+        //    }
+        //}
+
+
+
         #endregion
 
 

@@ -1,4 +1,5 @@
 ﻿using BBB.NET.CORE.BaseClasses;
+using BBB.NET.CORE.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,8 +12,9 @@ namespace BBB.NET.CORE.Responses.Meeting
     [Serializable, XmlRoot("response")]
     public class GetMeetingsResponse : BaseResponse
     {
-        public List<GetMeetingInfoResponse> meetings { get; set; }
+        public List<MeetingInfo> meetings { get; set; }
         public string messageKey { get; set; }
         public string message { get; set; }
+       
     }
 }

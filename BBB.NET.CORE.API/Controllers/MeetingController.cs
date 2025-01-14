@@ -180,7 +180,7 @@ namespace BBB.NET.CORE.API.Controllers
 
         #region Is Meeting Running
 
-        [HttpGet("isRunning")]
+        [HttpGet("isMeetingRunning")]
         public async Task<IActionResult> IsMeetingRunning(string meetingID)
         {
             if (string.IsNullOrEmpty(meetingID))
@@ -222,7 +222,7 @@ namespace BBB.NET.CORE.API.Controllers
 
         #region Get Meeting Info
 
-        [HttpGet("info")]
+        [HttpGet("getMeetingInfo")]
         public async Task<IActionResult> GetMeetingInfo(string meetingID, string password)
         {
             try
@@ -282,7 +282,7 @@ namespace BBB.NET.CORE.API.Controllers
 
         #region Get All Meetings
 
-        [HttpGet("all")]
+        [HttpGet("getMeetings")]
         public async Task<IActionResult> GetAllMeetings()
         {
             try

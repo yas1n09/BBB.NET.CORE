@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
@@ -34,14 +35,42 @@ namespace BBB.NET.CORE.Helpers
         }
 
         // XML Hata Yanıtı Oluşturma (Generic)
+
+
         public static string XmlErrorResponse<T>(string message, string details) where T : new()
         {
-            dynamic errorResponse = new T();
-            errorResponse.Message = message;
-            errorResponse.Details = details;
+            var errorResponse = new T();
+
+            var messageProperty = typeof(T).GetProperty("message", BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+            var detailsProperty = typeof(T).GetProperty("details", BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+
+            if (messageProperty != null)
+            {
+                messageProperty.SetValue(errorResponse, message);
+            }
+
+            if (detailsProperty != null)
+            {
+                detailsProperty.SetValue(errorResponse, details);
+            }
 
             return ToXml(errorResponse);
         }
+
+
+
+
+
+
+
+        //public static string XmlErrorResponse<T>(string message, string details) where T : new()
+        //{
+        //    dynamic errorResponse = new T();
+        //    errorResponse.Message = message;
+        //    errorResponse.Details = details;
+
+        //    return ToXml(errorResponse);
+        //}
 
         // Nesneyi XML'e Dönüştürme (Serialize)
         public static string ToXml<T>(T value)
