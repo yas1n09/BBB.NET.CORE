@@ -14,8 +14,10 @@ namespace BBB.NET.CORE.DTOs
         public string Name { get; set; }
         public string AttendeePW { get; set; }
         public string ModeratorPW { get; set; }
-        public int Duration { get; set; }
+        public int Duration { get; set; } // Dakika cinsinden varsayılır
         public bool Redirect { get; set; }
         public string Message { get; set; }
+        public string Details { get; set; } // Yanıt hakkında ek bilgi
+
     }
 }

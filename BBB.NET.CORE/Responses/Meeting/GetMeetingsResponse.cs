@@ -12,10 +12,17 @@ namespace BBB.NET.CORE.Responses.Meeting
     [Serializable, XmlRoot("response")]
     public class GetMeetingsResponse : BaseResponse
     {
-        public List<MeetingInfo> meetings { get; set; }
-        public string messageKey { get; set; }
-        public string message { get; set; }
-        
+        //public List<MeetingInfo> meetings { get; set; }
 
+
+        [XmlElement(ElementName = "meetings")]
+        public Meetings meetings { get; set; }
+
+        [Serializable]
+        public class Meetings
+        {
+            [XmlElement(ElementName = "meeting")]
+            public List<MeetingInfo> meetingList { get; set; } = new List<MeetingInfo>();
+        }
     }
 }

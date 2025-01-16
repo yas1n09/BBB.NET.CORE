@@ -13,5 +13,6 @@ namespace BBB.NET.CORE.DTOs
         public string MeetingID { get; set; }
         public bool IsRunning { get; set; }
         public string Message { get; set; }
+        public string Details { get; set; } // Ek bilgi için alan eklendi
     }
 }

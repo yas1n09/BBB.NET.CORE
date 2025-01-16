@@ -12,6 +12,7 @@ namespace BBB.NET.CORE.Responses.Meeting
     public class IsMeetingRunningResponse : BaseResponse
     {
         public bool? running { get; set; }
-        //public string meetingID { get; set; }
+        public string message { get; set; } // Ek bilgi için alan eklendi
+        public string meetingID { get; set; } // Yanıta toplantı ID'si eklendi
     }
 }

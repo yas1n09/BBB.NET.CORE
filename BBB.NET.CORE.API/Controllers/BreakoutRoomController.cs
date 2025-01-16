@@ -21,9 +21,11 @@ namespace BBB.NET.CORE.API.Controllers
         }
 
         #region Create Breakout Rooms
+
+
         [HttpPost("create")]
         [Produces("application/xml")]
-        public async Task<IActionResult> CreateBreakoutRooms(string parentMeetingID, int roomCount, int durationInMinutes, string moderatorPW, string attendeePW, string name = "Breakout Room", bool redirect = true)
+        public async Task<IActionResult> CreateBreakoutRooms(string parentMeetingID, int roomCount, int durationInMinutes, List<string> attendeeIDs, string moderatorPW, string attendeePW, string name = "Breakout Room", bool redirect = true)
         {
             try
             {
@@ -35,12 +37,20 @@ namespace BBB.NET.CORE.API.Controllers
                         "Invalid input."));
                 }
 
+                if (roomCount <= 0)
+                {
+                    return BadRequest(XmlHelper.XmlErrorResponse<CreateBreakoutRoomsResponse>(
+                        "Room count must be greater than zero.",
+                        "Invalid input."));
+                }
+
                 // API istemcisi için istek nesnesi oluşturma
                 var request = new CreateBreakoutRoomRequest
                 {
                     parentMeetingID = parentMeetingID,
                     roomCount = roomCount,
                     durationInMinutes = durationInMinutes,
+                    attendeeIDs = attendeeIDs ?? new List<string>(),
                     moderatorPW = moderatorPW,
                     attendeePW = attendeePW,
                     name = name,
@@ -59,11 +69,16 @@ namespace BBB.NET.CORE.API.Controllers
                 }
 
                 // Başarılı yanıt oluşturma
-                var response = new CreateBreakoutRoomsResponse
+                var response = new BreakoutRoomCreateDto
                 {
-                    parentMeetingID = parentMeetingID,
-                    breakoutRoomIDs = result.breakoutRoomIDs,
-                    message = "Breakout rooms created successfully."
+                    MeetingID = parentMeetingID,
+                    Name = name,
+                    AttendeePW = attendeePW,
+                    ModeratorPW = moderatorPW,
+                    Duration = durationInMinutes,
+                    Redirect = redirect,
+                    Message = "Breakout rooms created successfully.",
+                    Details = $"Created {result.breakoutRoomIDs.Count} breakout rooms."
                 };
 
                 return Ok(XmlHelper.ToXml(response));
@@ -71,7 +86,7 @@ namespace BBB.NET.CORE.API.Controllers
             catch (Exception ex)
             {
                 // Hata yanıtı döndürme
-                return StatusCode(500, XmlHelper.XmlErrorResponse<CreateBreakoutRoomsResponse>(
+                return StatusCode(500, XmlHelper.XmlErrorResponse<BreakoutRoomCreateDto>(
                     "An error occurred while creating breakout rooms.",
                     ex.Message));
             }

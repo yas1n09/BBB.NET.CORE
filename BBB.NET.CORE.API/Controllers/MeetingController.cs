@@ -199,6 +199,15 @@ namespace BBB.NET.CORE.API.Controllers
                     meetingID = meetingID
                 });
 
+                if (response == null || response.returncode != Returncode.SUCCESS)
+                {
+                    return Content(XmlHelper.ToXml(new MeetingErrorResponseDto
+                    {
+                        Message = "Failed to check meeting status.",
+                        Details = response?.message ?? "No details available."
+                    }), "application/xml");
+                }
+
                 return Content(XmlHelper.ToXml(new MeetingStatusDto
                 {
                     MeetingID = meetingID,
@@ -211,10 +220,11 @@ namespace BBB.NET.CORE.API.Controllers
                 return StatusCode(500, XmlHelper.ToXml(new MeetingErrorResponseDto
                 {
                     Message = "An error occurred while checking meeting status.",
-                    Details = ex.Message
+                    Details = ex.ToString()
                 }));
             }
         }
+
 
 
         #endregion
@@ -233,16 +243,16 @@ namespace BBB.NET.CORE.API.Controllers
                     password = password
                 });
 
-                if (result.returncode == Returncode.FAILED)
+                if (result == null || result.returncode != Returncode.SUCCESS)
                 {
                     return Content(XmlHelper.ToXml(new MeetingErrorResponseDto
                     {
                         Message = "Failed to retrieve meeting info.",
-                        Details = result.message
+                        Details = $"{result?.message} (Key: {result?.messageKey})"
                     }), "application/xml");
                 }
 
-                return Content(XmlHelper.ToXml(new MeetingInfoDto
+                var dto = new MeetingInfoDto
                 {
                     MeetingID = result.meetingID,
                     MeetingName = result.meetingName,
@@ -261,62 +271,88 @@ namespace BBB.NET.CORE.API.Controllers
                     MaxUsers = result.maxUsers,
                     ModeratorCount = result.moderatorCount,
                     IsBreakout = result.isBreakout,
-                    BreakoutRooms = result.breakoutRooms,
+                    BreakoutRooms = result.breakoutRooms ?? new List<string>(),
                     StartTime = result.startTime,
                     EndTime = result.endTime,
+                    ParentMeetingID = result.parentMeetingID,
+                    Sequence = result.sequence,
+                    FreeJoin = result.freeJoin,
+                    Running = result.running,
+                    HasUserJoined = result.hasUserJoined,
+                    Recording = result.recording,
+                    HasBeenForciblyEnded = result.hasBeenForciblyEnded,
                     Message = "Meeting info retrieved successfully."
-                }), "application/xml");
+                };
+
+                return Content(XmlHelper.ToXml(dto), "application/xml");
             }
             catch (Exception ex)
             {
                 return StatusCode(500, XmlHelper.ToXml(new MeetingErrorResponseDto
                 {
                     Message = "An error occurred while retrieving meeting info.",
-                    Details = ex.Message
+                    Details = ex.ToString()
                 }));
             }
         }
 
+
         #endregion
 
 
-        #region Get All Meetings
 
+        #region Get All Meetings
         [HttpGet("getMeetings")]
         public async Task<IActionResult> GetAllMeetings()
         {
             try
             {
-                var meetings = await client.GetMeetingsAsync();
+                var meetingsResponse = await client.GetMeetingsAsync();
 
-                if (meetings == null || meetings.returncode == Returncode.FAILED)
+                if (meetingsResponse == null ||
+                    meetingsResponse.returncode == Returncode.FAILED ||
+                    meetingsResponse.meetings == null ||
+                    meetingsResponse.meetings.meetingList == null)
                 {
                     return Content(XmlHelper.ToXml(new MeetingErrorResponseDto
                     {
                         Message = "No meetings found.",
-                        Details = "Meetings list is empty or an error occurred."
+                        Details = "The meetings list is empty or an error occurred while fetching the data."
                     }), "application/xml");
                 }
 
                 var response = new AllMeetingsDto
                 {
                     Message = "Meetings retrieved successfully.",
-                    Meetings = meetings.meetings.Select(m => new MeetingInfoDto
+                    Meetings = meetingsResponse.meetings.meetingList.Select(m => new MeetingInfoDto
                     {
                         MeetingID = m.meetingID,
+                        InternalMeetingID = m.internalMeetingID,
                         MeetingName = m.meetingName,
                         CreateTime = m.createTime,
                         CreateDate = m.createDate,
+                        VoiceBridge = m.voiceBridge,
+                        DialNumber = m.dialNumber,
+                        AttendeePW = m.attendeePW,
+                        ModeratorPW = m.moderatorPW,
+                        Running = m.running,
+                        Duration = m.duration,
+                        HasUserJoined = m.hasUserJoined,
+                        Recording = m.recording,
+                        HasBeenForciblyEnded = m.hasBeenForciblyEnded,
+                        StartTime = m.startTime,
+                        EndTime = m.endTime,
                         ParticipantCount = m.participantCount,
                         ListenerCount = m.listenerCount,
                         VoiceParticipantCount = m.voiceParticipantCount,
                         VideoCount = m.videoCount,
+                        MaxUsers = m.maxUsers,
                         ModeratorCount = m.moderatorCount,
                         IsBreakout = m.isBreakout,
-                        BreakoutRooms = m.breakoutRooms,
-                        Duration = m.duration,
-                        StartTime = m.startTime,
-                        EndTime = m.endTime
+                        BreakoutRooms = m.breakoutRooms ?? new List<string>(),
+                        ParentMeetingID = m.parentMeetingID,
+                        Sequence = m.sequence,
+                        FreeJoin = m.freeJoin
                     }).ToList()
                 };
 
@@ -327,7 +363,7 @@ namespace BBB.NET.CORE.API.Controllers
                 return StatusCode(500, XmlHelper.ToXml(new MeetingErrorResponseDto
                 {
                     Message = "An error occurred while retrieving meetings.",
-                    Details = ex.Message
+                    Details = ex.ToString()
                 }));
             }
         }

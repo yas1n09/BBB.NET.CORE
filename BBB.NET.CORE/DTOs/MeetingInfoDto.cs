@@ -38,5 +38,6 @@ namespace BBB.NET.CORE.DTOs
         public int? Sequence { get; set; }
         public bool? FreeJoin { get; set; }
         public string Message { get; set; }
+
     }
 }
