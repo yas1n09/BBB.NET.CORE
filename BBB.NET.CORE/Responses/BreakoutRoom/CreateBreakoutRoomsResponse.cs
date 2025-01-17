@@ -8,7 +8,7 @@ using System.Xml.Serialization;
 
 namespace BBB.NET.CORE.Responses.BreakoutRoom
 {
-    [XmlRoot("response")]
+    [Serializable, XmlRoot("response")]
     public class CreateBreakoutRoomsResponse :BaseResponse
     {
         [XmlElement(ElementName = "parentMeetingID")]

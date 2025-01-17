@@ -74,6 +74,30 @@ namespace BBB.NET.CORE.BigBlueButtonAPIClients
             return result;
         }
 
+
+        private async Task<T> HttpPostAsync<T>(string method, BaseRequest request)
+        {
+            var url = urlBuilder.Build(method, request);
+            var xmlContent = XmlHelper.ToXml(request); // XML formatında veri oluştur
+            var content = new StringContent(xmlContent, Encoding.UTF8, "application/xml"); // Content-Type: application/xml
+
+            var response = await httpClient.PostAsync(url, content);
+            var xmlOrJson = await response.Content.ReadAsStringAsync();
+
+            if (typeof(T) == typeof(string)) return (T)(object)xmlOrJson;
+
+            if (xmlOrJson.StartsWith("<"))
+            {
+                return XmlHelper.FromXml<T>(xmlOrJson);
+            }
+            else
+            {
+                var wrapper = JsonConvert.DeserializeObject<ResponseJsonWrapper<T>>(xmlOrJson);
+                return wrapper.response;
+            }
+        }
+
+
         private async Task<T> HttpGetAsync<T>(string url)
         {
             // HTTP isteği gönder
@@ -262,11 +286,12 @@ namespace BBB.NET.CORE.BigBlueButtonAPIClients
 
 
         #region Breakout Room Management
-        
+
         public async Task<CreateBreakoutRoomsResponse> CreateBreakoutRoomsAsync(CreateBreakoutRoomRequest request)
         {
             return await HttpGetAsync<CreateBreakoutRoomsResponse>("createBreakoutRooms", request);
         }
+
         public async Task<GetBreakoutRoomsResponse> GetBreakoutRoomsAsync(GetBreakoutRoomsRequest request)
         {
             return await HttpGetAsync<GetBreakoutRoomsResponse>("getBreakoutRooms", request);
@@ -475,19 +500,6 @@ namespace BBB.NET.CORE.BigBlueButtonAPIClients
             return await HttpGetAsync<ListModulesResponse>("listModules", request);
         }
         #endregion
-
-
-        //#region Health Management
-        //public async Task<CheckHealthResponse> CheckHealthAsync(CheckHealthRequest request)
-        //{
-        //    return await HttpGetAsync<CheckHealthResponse>("checkHealth", request);
-        //}
-
-        //public async Task<GetHealthDetailsResponse> GetHealthDetailsAsync(GetHealthDetailsRequest request)
-        //{
-        //    return await HttpGetAsync<GetHealthDetailsResponse>("getHealthDetails", request);
-        //}
-        //#endregion
 
 
         #region Whiteboard Management

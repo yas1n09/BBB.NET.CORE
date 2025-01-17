@@ -25,37 +25,25 @@ namespace BBB.NET.CORE.API.Controllers
 
         [HttpPost("create")]
         [Produces("application/xml")]
-        public async Task<IActionResult> CreateBreakoutRooms(string parentMeetingID, int roomCount, int durationInMinutes, List<string> attendeeIDs, string moderatorPW, string attendeePW, string name = "Breakout Room", bool redirect = true)
+        [Consumes("application/xml")]
+        public async Task<IActionResult> CreateBreakoutRooms([FromBody] CreateBreakoutRoomRequest request)
         {
             try
             {
                 // Parametre doğrulama
-                if (string.IsNullOrEmpty(parentMeetingID))
+                if (string.IsNullOrEmpty(request.parentMeetingID))
                 {
                     return BadRequest(XmlHelper.XmlErrorResponse<CreateBreakoutRoomsResponse>(
                         "Parent meeting ID cannot be null or empty.",
                         "Invalid input."));
                 }
 
-                if (roomCount <= 0)
+                if (request.roomCount <= 0)
                 {
                     return BadRequest(XmlHelper.XmlErrorResponse<CreateBreakoutRoomsResponse>(
                         "Room count must be greater than zero.",
                         "Invalid input."));
                 }
-
-                // API istemcisi için istek nesnesi oluşturma
-                var request = new CreateBreakoutRoomRequest
-                {
-                    parentMeetingID = parentMeetingID,
-                    roomCount = roomCount,
-                    durationInMinutes = durationInMinutes,
-                    attendeeIDs = attendeeIDs ?? new List<string>(),
-                    moderatorPW = moderatorPW,
-                    attendeePW = attendeePW,
-                    name = name,
-                    redirect = redirect
-                };
 
                 // Breakout odalarını oluşturmak için API çağrısı
                 var result = await client.CreateBreakoutRoomsAsync(request);
@@ -71,12 +59,12 @@ namespace BBB.NET.CORE.API.Controllers
                 // Başarılı yanıt oluşturma
                 var response = new BreakoutRoomCreateDto
                 {
-                    MeetingID = parentMeetingID,
-                    Name = name,
-                    AttendeePW = attendeePW,
-                    ModeratorPW = moderatorPW,
-                    Duration = durationInMinutes,
-                    Redirect = redirect,
+                    MeetingID = request.parentMeetingID,
+                    Name = request.name,
+                    AttendeePW = request.attendeePW,
+                    ModeratorPW = request.moderatorPW,
+                    Duration = request.durationInMinutes,
+                    Redirect = request.redirect,
                     Message = "Breakout rooms created successfully.",
                     Details = $"Created {result.breakoutRoomIDs.Count} breakout rooms."
                 };
@@ -101,10 +89,8 @@ namespace BBB.NET.CORE.API.Controllers
 
 
 
-
-
-
-
+        //[HttpPost("create")]
+        //[Produces("application/xml")]
 
         //public async Task<IActionResult> CreateBreakoutRooms(string parentMeetingID, int roomCount, int durationInMinutes, List<string> attendeeIDs, string moderatorPW, string attendeePW, string name = "Breakout Room", bool redirect = true)
         //{
