@@ -56,12 +56,6 @@ namespace BBB.NET.CORE.BigBlueButtonAPIClients
             this.urlBuilder = new UrlBuilder(settings);
             this.httpClient = httpClient;
 
-
-            //if (httpClient.BaseAddress == null)
-            //{
-            //    httpClient.BaseAddress = new Uri(settings.ServerAPIUrl);
-            //}
-
         }
 
 

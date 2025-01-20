@@ -9,8 +9,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BBB.NET.CORE.API.Controllers
 {
-    [Route("api/[controller]")]
+    
     [ApiController]
+    [Route("api/[controller]")]
     public class MeetingController : ControllerBase
     {
         private readonly BigBlueButtonAPIClient client;
