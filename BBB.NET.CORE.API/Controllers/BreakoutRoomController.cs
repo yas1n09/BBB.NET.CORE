@@ -3,6 +3,7 @@ using BBB.NET.CORE.DTOs;
 using BBB.NET.CORE.Enums;
 using BBB.NET.CORE.Helpers;
 using BBB.NET.CORE.Requests.BreakoutRoom;
+using BBB.NET.CORE.Requests.Meeting;
 using BBB.NET.CORE.Responses.BreakoutRoom;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -22,61 +23,116 @@ namespace BBB.NET.CORE.API.Controllers
         }
 
         #region Create Breakout Rooms
-        [HttpPost("create")]
-        public async Task<IActionResult> CreateBreakoutRooms(
-            [FromQuery] string parentMeetingID,
-            [FromQuery] int roomCount,
-            [FromQuery] int durationInMinutes,
-            [FromQuery] string moderatorPW,
-            [FromQuery] string attendeePW,
-            [FromQuery] string name = "Breakout Room",
-            [FromQuery] bool redirect = true,
-            [FromBody] List<string> attendeeIDs = null)
+
+        [HttpPost("createBreakoutRooms")]
+
+        public async Task<IActionResult> CreateBreakoutRoom(string meetingID, string attendeePW, string moderatorPW, string parentMeetingID, string name = "Breakout Room", int duration = 60, int sequence = 1, bool freeJoin = true)
         {
-            try
+            // Create breakout room request
+            var createRequest = new CreateMeetingRequest
             {
-                if (string.IsNullOrEmpty(parentMeetingID) || roomCount <= 0)
-                {
-                    return BadRequest(XmlHelper.XmlErrorResponse<CreateBreakoutRoomsResponse>(
-                        "Invalid input parameters.",
-                        "Parent meeting ID and room count must be valid."));
-                }
-
-                var request = new CreateBreakoutRoomRequest
-                {
-                    ParentMeetingID = parentMeetingID,
-                    RoomCount = roomCount,
-                    DurationInMinutes = durationInMinutes,
-                    ModeratorPW = moderatorPW,
-                    AttendeePW = attendeePW,
-                    Name = name,
-                    Redirect = redirect,
-                    AttendeeIDs = attendeeIDs ?? new List<string>()
-                };
-
-                var result = await client.CreateBreakoutRoomsAsync(request);
-
-                if (result.returncode == Returncode.FAILED)
-                {
-                    return BadRequest(XmlHelper.XmlErrorResponse<CreateBreakoutRoomsResponse>(
-                        "Failed to create breakout rooms.",
-                        result.message));
-                }
-
-                return Ok(new CreateBreakoutRoomsResponse
-                {
-                    ParentMeetingID = parentMeetingID,
-                    BreakoutRoomIDs = result.BreakoutRoomIDs,
-                    message = "Breakout rooms created successfully."
-                });
+                meetingID = meetingID,
+                name = name,
+                attendeePW = attendeePW,
+                moderatorPW = moderatorPW,
+                duration = duration,
+                isBreakout = true,
+                parentMeetingID = parentMeetingID,
+                sequence = sequence,
+                freeJoin = freeJoin
+            };
+            // Send request to BBB server
+            var response = await client.CreateMeetingAsync(createRequest);
+            // Prepare the response
+            var breakoutResponse = new CreateBreakoutRoomsResponse
+            {
+                MeetingID = meetingID,
+                AttendeePassword = attendeePW,
+                ModeratorPassword = moderatorPW,
+                CreateTime = response.createTime,
+                VoiceBridge = response.voiceBridge?.ToString(),
+                DialNumber = response.dialNumber,
+                CreateDate = response.createDate,
+                HasUserJoined = response.hasUserJoined,
+                Duration = response.duration,
+                HasBeenForciblyEnded = response.hasBeenForciblyEnded,
+                // Status is dynamically calculated based on returncode
+            };
+            if (response.returncode == Returncode.SUCCESS)
+            {
+                breakoutResponse.message = "Breakout odası başarıyla oluşturuldu.";
+                return Ok(breakoutResponse);
             }
-            catch (Exception ex)
+            else
             {
-                return StatusCode(500, XmlHelper.XmlErrorResponse<CreateBreakoutRoomsResponse>(
-                    "An error occurred while creating breakout rooms.",
-                    ex.Message));
+                breakoutResponse.message = $"Hata: {response.messageKey} - {response.message ?? "Bilgi yok"}";
+                return BadRequest(breakoutResponse);
             }
         }
+
+
+
+
+
+
+
+
+
+
+        //public async Task<IActionResult> CreateBreakoutRoom([FromBody] CreateBreakoutRoomRequest request)
+        //{
+        //    // Create breakout room request
+        //    var createRequest = new CreateMeetingRequest
+        //    {
+        //        meetingID = request.MeetingID,
+        //        name = request.Name,
+        //        attendeePW = request.AttendeePassword,
+        //        moderatorPW = request.ModeratorPassword,
+        //        duration = request.Duration,
+        //        isBreakout = true,
+        //        parentMeetingID = request.ParentMeetingID,
+        //        sequence = request.Sequence,
+        //        freeJoin = request.FreeJoin
+        //    };
+
+        //    // Send request to BBB server
+        //    var response = await client.CreateMeetingAsync(createRequest);
+
+
+
+        //    // Prepare the response
+        //    var breakoutResponse = new CreateBreakoutRoomsResponse
+        //    {
+        //        MeetingID = request.MeetingID,
+        //        AttendeePassword = request.AttendeePassword,
+        //        ModeratorPassword = request.ModeratorPassword,
+        //        CreateTime = response.createTime,
+        //        VoiceBridge = response.voiceBridge?.ToString(),
+        //        DialNumber = response.dialNumber,
+        //        CreateDate = response.createDate,
+        //        HasUserJoined = response.hasUserJoined,
+        //        Duration = response.duration,
+        //        HasBeenForciblyEnded = response.hasBeenForciblyEnded,
+        //        // Status is dynamically calculated based on returncode
+        //    };
+
+        //    if (response.returncode == Returncode.SUCCESS)
+        //    {
+        //        breakoutResponse.message = "Breakout odası başarıyla oluşturuldu.";
+        //        return Ok(breakoutResponse);
+        //    }
+        //    else
+        //    {
+        //        breakoutResponse.message = $"Hata: {response.messageKey} - {response.message ?? "Bilgi yok"}";
+        //        return BadRequest(breakoutResponse);
+        //    }
+        //}
+
+
+
+
+
+
         #endregion
 
 

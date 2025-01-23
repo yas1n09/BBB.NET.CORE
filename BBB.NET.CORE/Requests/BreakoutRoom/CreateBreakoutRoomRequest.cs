@@ -4,32 +4,39 @@ using System.Xml.Serialization;
 
 namespace BBB.NET.CORE.Requests.BreakoutRoom
 {
-    [XmlRoot("createBreakoutRoomsRequest")]
+    [Serializable, XmlRoot("request")]
+    
     public class CreateBreakoutRoomRequest : BaseRequest
     {
-        [XmlElement("parentMeetingID")]
-        public string ParentMeetingID { get; set; }
-
-        [XmlElement("roomCount")]
-        public int RoomCount { get; set; }
-
-        [XmlElement("durationInMinutes")]
-        public int DurationInMinutes { get; set; }
-
-        [XmlArray("attendeeIDs")]
-        [XmlArrayItem("attendeeIDs")]
-        public List<string> AttendeeIDs { get; set; } = new List<string>();
-
-        [XmlElement("moderatorPW")]
-        public string ModeratorPW { get; set; }
-
-        [XmlElement("attendeePW")]
-        public string AttendeePW { get; set; }
 
         [XmlElement("name")]
-        public string Name { get; set; } = "Breakout Room";
+        public string Name { get; set; } // Toplantı adı
 
-        [XmlElement("redirect")]
-        public bool Redirect { get; set; } = true;
+        [XmlElement("meetingID")]
+        public string MeetingID { get; set; } // Toplantı kimliği
+
+        [XmlElement("attendeePW")]
+        public string AttendeePassword { get; set; } // Katılımcı parolası
+
+        [XmlElement("moderatorPW")]
+        public string ModeratorPassword { get; set; } // Moderatör parolası
+
+        [XmlElement("duration")]
+        public int Duration { get; set; } = 60; // Toplantı süresi (dakika cinsinden)
+
+        [XmlElement("isBreakout")]
+        public bool IsBreakout { get; set; } = true; // Breakout odası olduğunu belirtir
+
+        [XmlElement("parentMeetingID")]
+        public string ParentMeetingID { get; set; } // Ana toplantının kimliği
+
+        [XmlElement("sequence")]
+        public int Sequence { get; set; } = 1; // Breakout odasının sıra numarası
+
+        [XmlElement("freeJoin")]
+        public bool FreeJoin { get; set; } = true; // Katılımcıların serbestçe katılabilmesi
+
+        // Diğer isteğe bağlı parametreler burada tanımlanabilir
+
     }
 }
